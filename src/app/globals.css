@@ -1,0 +1,111 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f0f2f5;
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 95%; /* f0f2f5 */
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 210 100% 40%; /* 0066cc */
+    --primary-foreground: 0 0% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 100% 40%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 72% 51%; /* dc3545 */
+    --destructive-foreground: 0 0% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 210 100% 40%;
+    --radius: 0.8rem;
+
+    --kpi-total-bg: 210 100% 97%;
+    --kpi-total-fg: 210 100% 30%;
+    --kpi-satisfaction-bg: 134 61% 95%;
+    --kpi-satisfaction-fg: 134 61% 31%;
+    --kpi-praise-bg: 45 100% 96%;
+    --kpi-praise-fg: 45 100% 35%;
+    --kpi-critical-bg: 354 70% 97%;
+    --kpi-critical-fg: 354 70% 44%;
+
+    --blue-500-h: 210;
+    --blue-500-s: 100%;
+    --blue-500-l: 40%;
+    --green-500-h: 134;
+    --green-500-s: 61%;
+    --green-500-l: 41%;
+    --yellow-500-h: 45;
+    --yellow-500-s: 100%;
+    --yellow-500-l: 51%;
+    --red-500-h: 354;
+    --red-500-s: 70%;
+    --red-500-l: 54%;
+
+    --chart-1: 134 61% 41%; /* 28a745 */
+    --chart-2: 354 70% 54%; /* dc3545 */
+    --chart-3: 45 100% 51%; /* ffc107 */
+    --chart-4: 192 78% 41%; /* 17a2b8 */
+    --chart-5: 210 100% 40%; /* 0066cc */
+
+    --chart-positive: 134 61% 41%;
+    --chart-negative: 354 70% 54%;
+
+    --tab-positive-bg: 134 61% 41%;
+    --tab-positive-fg: 0 0% 98%;
+    --tab-positive-bg-light: 134 61% 95%;
+
+    --tab-negative-bg: 354 70% 54%;
+    --tab-negative-fg: 0 0% 98%;
+    --tab-negative-bg-light: 354 70% 97%;
+
+    --tab-action-bg: 210 100% 40%;
+    --tab-action-fg: 0 0% 98%;
+    --tab-action-bg-light: 210 100% 97%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 210 100% 50%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 210 100% 50%;
+    --radius: 0.8rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+    
