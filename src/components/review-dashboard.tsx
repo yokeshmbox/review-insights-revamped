@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import * as XLSX from 'xlsx';
 import { FileUploader } from '@/components/file-uploader';
 import { Loader2, Download, Upload, FileCode, X, Lightbulb, ThumbsUp, ThumbsDown, MessageSquare, Send, TrendingUp, TrendingDown, AlertTriangle, CheckCircle2 } from 'lucide-react';
@@ -189,8 +189,8 @@ export function ReviewDashboard() {
             return acc;
         }, {} as Record<TopicCategory, number>);
 
-    const departmentsWithIssues = Object.values(negativeReviewsByTopic).filter(count => count >= 30).length;
-    const departmentsWithPraise = Object.values(positiveReviewsByTopic).filter(count => count >= 30).length;
+    const departmentsWithIssues = Object.values(negativeReviewsByTopic).filter(count => count >= 50).length;
+    const departmentsWithPraise = Object.values(positiveReviewsByTopic).filter(count => count >= 50).length;
 
     const criticalTopicsBreakdown = Object.entries(negativeReviewsByTopic)
       .filter(([_, count]) => count > 0)
@@ -206,7 +206,7 @@ export function ReviewDashboard() {
     const criticalAreasCount = criticalTopicsBreakdown.length;
     
     let criticalInsight = '';
-    if (negativeReviewsCount >= 30) {
+    if (negativeReviewsCount >= 50) {
         criticalInsight = `${departmentsWithIssues} issue areas out of ${totalAreas} total areas.`;
     } else {
         criticalInsight = `${criticalAreasCount} issue area${criticalAreasCount !== 1 ? 's' : ''} out of ${totalAreas} total areas. Top issue is '${topCriticalIssue.topic}'.`;
@@ -215,7 +215,7 @@ export function ReviewDashboard() {
     const praiseAreasCount = praiseTopicsBreakdown.length;
     
     let praiseInsight = '';
-    if (positiveReviewsCount >= 30) {
+    if (positiveReviewsCount >= 50) {
         praiseInsight = `${departmentsWithPraise} excellence areas out of ${totalAreas} total areas.`;
     } else {
         praiseInsight = `${praiseAreasCount} excellence area${praiseAreasCount !== 1 ? 's' : ''} out of ${totalAreas} total areas. Top praise is '${topPraiseArea.topic}'.`;
@@ -228,16 +228,16 @@ export function ReviewDashboard() {
       },
       satisfaction: { value: satisfaction.rate, trend: satisfaction.trend, insight: satisfaction.insight },
       praise: {
-          value: `${positiveReviewsCount >= 30 ? departmentsWithPraise : 1} Area${(positiveReviewsCount >= 30 && departmentsWithPraise > 1) ? 's' : ''} of Excellence`,
+          value: `${positiveReviewsCount >= 50 ? departmentsWithPraise : 1} Area${(positiveReviewsCount >= 50 && departmentsWithPraise > 1) ? 's' : ''} of Excellence`,
           trend: `Top: ${topPraiseArea.topic}`,
           insight: praiseInsight,
-          areaCount: positiveReviewsCount >= 30 ? departmentsWithPraise : 1,
+          areaCount: positiveReviewsCount >= 50 ? departmentsWithPraise : 1,
       },
       critical: { 
-        value: `${negativeReviewsCount >= 30 ? departmentsWithIssues : 1} Area${(negativeReviewsCount >= 30 && departmentsWithIssues > 1) ? 's' : ''}`, 
+        value: `${negativeReviewsCount >= 50 ? departmentsWithIssues : 1} Area${(negativeReviewsCount >= 50 && departmentsWithIssues > 1) ? 's' : ''}`, 
         trend: `Top: ${topCriticalIssue.topic}`, 
         insight: criticalInsight,
-        areaCount: negativeReviewsCount >= 30 ? departmentsWithIssues : 1,
+        areaCount: negativeReviewsCount >= 50 ? departmentsWithIssues : 1,
       },
     };
   };
@@ -329,8 +329,8 @@ export function ReviewDashboard() {
 
             // Calculate areaCount inline
             const negativeCount = reviews.filter(r => r.sentiment === 'BAD' || r.sentiment === 'FARE').length;
-            const departmentsWithIssues = Object.values(negativeReviewsByTopic).filter(reviews => reviews.length >= 30).length;
-            const areaCount = negativeCount >= 30 ? departmentsWithIssues : 1;
+            const departmentsWithIssues = Object.values(negativeReviewsByTopic).filter(reviews => reviews.length >= 50).length;
+            const areaCount = negativeCount >= 50 ? departmentsWithIssues : 1;
 
             const criticalAreas = criticalAreasList.slice(0, areaCount);
 
@@ -375,8 +375,8 @@ export function ReviewDashboard() {
 
             // Calculate areaCount inline
             const positiveCount = reviews.filter(r => r.sentiment === 'BEST' || r.sentiment === 'GOOD').length;
-            const departmentsWithPraise = Object.values(positiveReviewsByTopic).filter(reviews => reviews.length >= 30).length;
-            const areaCount = positiveCount >= 30 ? departmentsWithPraise : 1;
+            const departmentsWithPraise = Object.values(positiveReviewsByTopic).filter(reviews => reviews.length >= 50).length;
+            const areaCount = positiveCount >= 50 ? departmentsWithPraise : 1;
 
             const praiseAreas = praiseAreasList.slice(0, areaCount);
 
@@ -1271,6 +1271,81 @@ export function ReviewDashboard() {
   };
 
 
+  // Utility function to interleave reviews by topic (round-robin)
+  // This ensures all areas appear early in the list
+  const interleaveReviewsByTopic = (reviewsList: Review[]): Review[] => {
+    // Group reviews by topic
+    const reviewsByTopic = reviewsList.reduce((acc, review) => {
+      const topic = review.topic || 'Other';
+      if (!acc[topic]) {
+        acc[topic] = [];
+      }
+      acc[topic].push(review);
+      return acc;
+    }, {} as Record<string, Review[]>);
+
+    // Get all topics
+    const topics = Object.keys(reviewsByTopic);
+    const interleaved: Review[] = [];
+    
+    // Round-robin: take one review from each topic in turn
+    let maxLength = Math.max(...Object.values(reviewsByTopic).map(arr => arr.length));
+    for (let i = 0; i < maxLength; i++) {
+      for (const topic of topics) {
+        if (reviewsByTopic[topic][i]) {
+          interleaved.push(reviewsByTopic[topic][i]);
+        }
+      }
+    }
+    
+    return interleaved;
+  };
+
+  // Memoize interleaved reviews to prevent re-shuffling on every render
+  const interleavedPraiseReviews = useMemo(() => {
+    const positiveReviewsByTopicForFilter = reviews
+      .filter(r => r.sentiment === 'BEST' || r.sentiment === 'GOOD')
+      .reduce((acc, review) => {
+        const topic = review.topic || 'Other';
+        if (!acc[topic]) {
+          acc[topic] = [];
+        }
+        acc[topic].push(review);
+        return acc;
+      }, {} as Record<TopicCategory, Review[]>);
+    
+    const topicsWithEnoughPraise = Object.entries(positiveReviewsByTopicForFilter)
+      .filter(([_, reviews]) => reviews.length >= 50)
+      .map(([topic]) => topic);
+    
+    return interleaveReviewsByTopic(reviews.filter(r => 
+      (r.sentiment === 'BEST' || r.sentiment === 'GOOD') && 
+      topicsWithEnoughPraise.includes(r.topic || 'Other')
+    ));
+  }, [reviews]);
+
+  const interleavedCriticalReviews = useMemo(() => {
+    const negativeReviewsByTopicForFilter = reviews
+      .filter(r => r.sentiment === 'BAD' || r.sentiment === 'FARE')
+      .reduce((acc, review) => {
+        const topic = review.topic || 'Other';
+        if (!acc[topic]) {
+          acc[topic] = [];
+        }
+        acc[topic].push(review);
+        return acc;
+      }, {} as Record<TopicCategory, Review[]>);
+    
+    const topicsWithEnoughIssues = Object.entries(negativeReviewsByTopicForFilter)
+      .filter(([_, reviews]) => reviews.length >= 50)
+      .map(([topic]) => topic);
+    
+    return interleaveReviewsByTopic(reviews.filter(r => 
+      (r.sentiment === 'FARE' || r.sentiment === 'BAD') && 
+      topicsWithEnoughIssues.includes(r.topic || 'Other')
+    ));
+  }, [reviews]);
+
   const getKpiDetails = (kpi: KpiType | null) => {
     if (!kpi) return null;
 
@@ -1288,49 +1363,11 @@ export function ReviewDashboard() {
             break;
         case 'praise':
             title = 'Top Praise Areas';
-            // Only show reviews from topics with 30+ positive reviews
-            const positiveReviewsByTopicForFilter = reviews
-                .filter(r => r.sentiment === 'BEST' || r.sentiment === 'GOOD')
-                .reduce((acc, review) => {
-                    const topic = review.topic || 'Other';
-                    if (!acc[topic]) {
-                        acc[topic] = [];
-                    }
-                    acc[topic].push(review);
-                    return acc;
-                }, {} as Record<TopicCategory, Review[]>);
-            
-            const topicsWithEnoughPraise = Object.entries(positiveReviewsByTopicForFilter)
-                .filter(([_, reviews]) => reviews.length >= 30)
-                .map(([topic]) => topic);
-            
-            filteredReviews = reviews.filter(r => 
-                (r.sentiment === 'BEST' || r.sentiment === 'GOOD') && 
-                topicsWithEnoughPraise.includes(r.topic || 'Other')
-            );
+            filteredReviews = interleavedPraiseReviews;
             break;
         case 'critical':
             title = 'Critical Issue Areas';
-            // Only show reviews from topics with 30+ negative reviews
-            const negativeReviewsByTopicForFilter = reviews
-                .filter(r => r.sentiment === 'BAD' || r.sentiment === 'FARE')
-                .reduce((acc, review) => {
-                    const topic = review.topic || 'Other';
-                    if (!acc[topic]) {
-                        acc[topic] = [];
-                    }
-                    acc[topic].push(review);
-                    return acc;
-                }, {} as Record<TopicCategory, Review[]>);
-            
-            const topicsWithEnoughIssues = Object.entries(negativeReviewsByTopicForFilter)
-                .filter(([_, reviews]) => reviews.length >= 30)
-                .map(([topic]) => topic);
-            
-            filteredReviews = reviews.filter(r => 
-                (r.sentiment === 'FARE' || r.sentiment === 'BAD') && 
-                topicsWithEnoughIssues.includes(r.topic || 'Other')
-            );
+            filteredReviews = interleavedCriticalReviews;
             break;
     }
     
@@ -1904,7 +1941,7 @@ export function ReviewDashboard() {
         />
       )}
 
-      <footer className="text-center text-xs text-gray-500 mt-8 rounded-lg animate-in fade-in-0 slide-in-from-bottom-5 duration-600">
+      <footer className="text-center text-xs text-gray-500 mt-8 p-6 bg-white rounded-lg shadow-md animate-in fade-in-0 slide-in-from-bottom-5 duration-600">
           <p>© {new Date().getFullYear()} Hospitality Pulse AI | Guest Analytics Intelligence Platform | {reviews.length} reviews analyzed</p>
           
           <div className="mt-4 flex justify-center items-center gap-4">
