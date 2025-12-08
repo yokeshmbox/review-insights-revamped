@@ -81,16 +81,16 @@ export function KeyNegativesCard({ reviews, suggestions = [] }: KeyNegativesCard
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <CardHeader className="p-0">
           <div className="flex items-center gap-3">
-              <ShieldAlert className="h-6 w-6 text-destructive" />
-              <CardDescription>Top areas needing improvement. Click an area to see AI-powered suggestions.</CardDescription>
+              <ShieldAlert className="h-6 text-destructive" />
+              <CardDescription> Click an area to see AI-powered suggestions.</CardDescription>
           </div>
         </CardHeader>
-        <CardHeader className="p-0">
+        {/* <CardHeader className="p-0">
            <div className="flex items-center gap-3">
               <Lightbulb className="h-6 w-6 text-primary" />
               <CardDescription>Action Plan for {selectedTopic || 'All Issues'}</CardDescription>
           </div>
-        </CardHeader>
+        </CardHeader> */}
       </div>
       <CardContent className="p-0 mt-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

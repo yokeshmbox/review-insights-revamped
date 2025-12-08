@@ -116,7 +116,7 @@ export function ReviewsListCard({ reviews }: ReviewsListCardProps) {
   return (
     <>
       <section className="bg-white rounded-lg p-6 shadow-md mt-8">
-        <div className="flex justify-between items-center mb-5 pb-4 border-b-2 border-primary">
+        <div className="flex justify-between items-center mb-5 pb-4 border-primary">
           <h2 className="text-xl font-bold text-gray-800">📋 Detailed Guest Reviews</h2>
           <div className="flex gap-2 flex-wrap">
             <FilterButton label="All" count={reviews.length} />

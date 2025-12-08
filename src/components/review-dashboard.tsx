@@ -1288,11 +1288,49 @@ export function ReviewDashboard() {
             break;
         case 'praise':
             title = 'Top Praise Areas';
-            filteredReviews = reviews.filter(r => r.sentiment === 'BEST' || r.sentiment === 'GOOD');
+            // Only show reviews from topics with 30+ positive reviews
+            const positiveReviewsByTopicForFilter = reviews
+                .filter(r => r.sentiment === 'BEST' || r.sentiment === 'GOOD')
+                .reduce((acc, review) => {
+                    const topic = review.topic || 'Other';
+                    if (!acc[topic]) {
+                        acc[topic] = [];
+                    }
+                    acc[topic].push(review);
+                    return acc;
+                }, {} as Record<TopicCategory, Review[]>);
+            
+            const topicsWithEnoughPraise = Object.entries(positiveReviewsByTopicForFilter)
+                .filter(([_, reviews]) => reviews.length >= 30)
+                .map(([topic]) => topic);
+            
+            filteredReviews = reviews.filter(r => 
+                (r.sentiment === 'BEST' || r.sentiment === 'GOOD') && 
+                topicsWithEnoughPraise.includes(r.topic || 'Other')
+            );
             break;
         case 'critical':
             title = 'Critical Issue Areas';
-            filteredReviews = reviews.filter(r => r.sentiment === 'FARE' || r.sentiment === 'BAD');
+            // Only show reviews from topics with 30+ negative reviews
+            const negativeReviewsByTopicForFilter = reviews
+                .filter(r => r.sentiment === 'BAD' || r.sentiment === 'FARE')
+                .reduce((acc, review) => {
+                    const topic = review.topic || 'Other';
+                    if (!acc[topic]) {
+                        acc[topic] = [];
+                    }
+                    acc[topic].push(review);
+                    return acc;
+                }, {} as Record<TopicCategory, Review[]>);
+            
+            const topicsWithEnoughIssues = Object.entries(negativeReviewsByTopicForFilter)
+                .filter(([_, reviews]) => reviews.length >= 30)
+                .map(([topic]) => topic);
+            
+            filteredReviews = reviews.filter(r => 
+                (r.sentiment === 'FARE' || r.sentiment === 'BAD') && 
+                topicsWithEnoughIssues.includes(r.topic || 'Other')
+            );
             break;
     }
     
@@ -1391,6 +1429,16 @@ export function ReviewDashboard() {
                             <Tooltip>
                                 <TooltipTrigger asChild>
                                     <div className="bg-white p-2 rounded-full shadow-lg hover:shadow-xl hover:scale-110 transition-all cursor-pointer border-2 border-white/20">
+                                        <AgilysysIcon className="h-5 w-5"/>
+                                    </div>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>Agilysys ADM</p>
+                                </TooltipContent>
+                            </Tooltip>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <div className="bg-white p-2 rounded-full shadow-lg hover:shadow-xl hover:scale-110 transition-all cursor-pointer border-2 border-white/20">
                                         <GoogleIcon className="h-5 w-5" />
                                     </div>
                                 </TooltipTrigger>
@@ -1418,16 +1466,7 @@ export function ReviewDashboard() {
                                     <p>Yelp</p>
                                 </TooltipContent>
                             </Tooltip>
-                            <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <div className="bg-white p-2 rounded-full shadow-lg hover:shadow-xl hover:scale-110 transition-all cursor-pointer border-2 border-white/20">
-                                        <AgilysysIcon className="h-5 w-5"/>
-                                    </div>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                    <p>Agilysys</p>
-                                </TooltipContent>
-                            </Tooltip>
+                            
                         </TooltipProvider>
                     </div>
                 </div>
@@ -1453,6 +1492,16 @@ export function ReviewDashboard() {
                 <p className="text-xs text-white/50 mb-3 text-left tracking-wide uppercase">Sources</p>
                 <div className="flex items-center gap-3">
                     <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <div className="bg-white p-2 rounded-full shadow-lg hover:shadow-xl hover:scale-110 transition-all cursor-pointer border-2 border-white/20">
+                                    <AgilysysIcon className="h-5 w-5"/>
+                                </div>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>Agilysys ADM</p>
+                            </TooltipContent>
+                        </Tooltip>
                         <Tooltip>
                             <TooltipTrigger asChild>
                                 <div className="bg-white p-2 rounded-full shadow-lg hover:shadow-xl hover:scale-110 transition-all cursor-pointer border-2 border-white/20">
@@ -1483,16 +1532,7 @@ export function ReviewDashboard() {
                                 <p>Yelp</p>
                             </TooltipContent>
                         </Tooltip>
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <div className="bg-white p-2 rounded-full shadow-lg hover:shadow-xl hover:scale-110 transition-all cursor-pointer border-2 border-white/20">
-                                    <AgilysysIcon className="h-5 w-5"/>
-                                </div>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                                <p>Agilysys ADM</p>
-                            </TooltipContent>
-                        </Tooltip>
+                        
                     </TooltipProvider>
                 </div>
             </div>
@@ -1511,7 +1551,7 @@ export function ReviewDashboard() {
               negativeCount={negativeReviewsCount}
               totalCount={reviews.length}
           />
-          <KpiCard title="Critical Issue Area" value={kpiData.critical.value} trend={kpiData.critical.trend} insight={kpiData.critical.insight} type="critical" onClick={() => handleKpiCardClick('critical')} isSelected={selectedKpi === 'critical'} topicBreakdown={criticalTopicsBreakdown.slice(0, kpiData.critical.areaCount)} />
+          <KpiCard title="Critical Issue Area" value={kpiData.critical.value} trend={kpiData.critical.trend} insight={kpiData.critical.insight} type="critical" onClick={() => handleKpiCardClick('critical')} isSelected={selectedKpi === 'critical'} topicBreakdown={criticalTopicsBreakdown.slice(0, kpiData.critical.areaCount)}/>
           <KpiCard title="Guest Satisfaction Rate" value={kpiData.satisfaction.value} trend={kpiData.satisfaction.trend} insight={kpiData.satisfaction.insight} type="satisfaction" onClick={() => handleKpiCardClick('satisfaction')} isSelected={selectedKpi === 'satisfaction'} trendData={sentimentTrend} />
           <KpiCard title="Top Praise Area" value={kpiData.praise.value} trend={kpiData.praise.trend} insight={kpiData.praise.insight} type="praise" onClick={() => handleKpiCardClick('praise')} isSelected={selectedKpi === 'praise'} topicBreakdown={praiseTopicsBreakdown.slice(0, kpiData.praise.areaCount)} />
       </section>
@@ -1583,55 +1623,9 @@ export function ReviewDashboard() {
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {selectedKpi === 'critical' ? (
-                                // For critical: Recommendations on left, reviews on right
+                                // For critical: Recommendations on right, reviews on left
                                 <>
-                                    <div className="space-y-4">
-                                        <h3 className="text-lg font-semibold text-red-700 flex items-center gap-2">
-                                            <AlertTriangle className="h-5 w-5" />
-                                            Recommended Actions by Area
-                                        </h3>
-                                        {isKpiSuggestionsLoading ? (
-                                            <div className="text-center py-10">
-                                                <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto" />
-                                                <p className="text-sm text-muted-foreground mt-2">Generating recommendations...</p>
-                                            </div>
-                                        ) : kpiSuggestions.length > 0 ? (
-                                            <Accordion type="single" collapsible defaultValue={kpiSuggestions[0]?.topic} className="space-y-3">
-                                                {kpiSuggestions.map((areaItem, index) => {
-                                                    const topicReviewCount = reviews.filter(r => r.topic === areaItem.topic && (r.sentiment === 'BAD' || r.sentiment === 'FARE')).length;
-                                                    return (
-                                                        <AccordionItem key={areaItem.topic} value={areaItem.topic} className="border-2 border-red-200 rounded-lg px-4 bg-red-50">
-                                                            <AccordionTrigger className="hover:no-underline py-3">
-                                                                <div className="flex items-center justify-between w-full pr-2">
-                                                                    <span className="font-semibold text-red-800">{areaItem.topic}</span>
-                                                                    <Badge variant="destructive" className="ml-2">{topicReviewCount} issues</Badge>
-                                                                </div>
-                                                            </AccordionTrigger>
-                                                            <AccordionContent className="pt-2 pb-3">
-                                                                {areaItem.suggestions && areaItem.suggestions.length > 0 ? (
-                                                                    <ul className="space-y-2">
-                                                                        {areaItem.suggestions.map((suggestion, idx) => (
-                                                                            <li key={idx} className="flex items-start gap-2 text-sm">
-                                                                                <CheckCircle2 className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
-                                                                                <span className="text-gray-700">{suggestion.suggestion}</span>
-                                                                            </li>
-                                                                        ))}
-                                                                    </ul>
-                                                                ) : (
-                                                                    <p className="text-sm text-muted-foreground italic">No recommendations available for this area.</p>
-                                                                )}
-                                                            </AccordionContent>
-                                                        </AccordionItem>
-                                                    );
-                                                })}
-                                            </Accordion>
-                                        ) : (
-                                            <div className="border-2 border-red-200 rounded-lg p-6 text-center bg-red-50">
-                                                <AlertTriangle className="h-12 w-12 text-red-400 mx-auto mb-2" />
-                                                <p className="text-sm text-muted-foreground">No recommendations available.</p>
-                                            </div>
-                                        )}
-                                    </div>
+                                    
                                     <ScrollArea className="h-full max-h-[480px] pr-4">
                                         <div className="space-y-4">
                                             {kpiDetails.reviews.length > 0 ? kpiDetails.reviews.map((review: Review) => {
@@ -1688,10 +1682,114 @@ export function ReviewDashboard() {
                                             )}
                                         </div>
                                     </ScrollArea>
+                                    <div className="space-y-4">
+                                        <h3 className="text-lg font-semibold text-green-700 flex items-center gap-2">
+                                            <AlertTriangle className="h-5 w-5" color='green' />
+                                            Recommended Actions by Area
+                                        </h3>
+                                        {isKpiSuggestionsLoading ? (
+                                            <div className="text-center py-10">
+                                                <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto" />
+                                                <p className="text-sm text-muted-foreground mt-2">Generating recommendations...</p>
+                                            </div>
+                                        ) : kpiSuggestions.length > 0 ? (
+                                            <Accordion type="single" collapsible defaultValue={kpiSuggestions[0]?.topic} className="space-y-3">
+                                                {kpiSuggestions.map((areaItem, index) => {
+                                                    const topicReviewCount = reviews.filter(r => r.topic === areaItem.topic && (r.sentiment === 'BAD' || r.sentiment === 'FARE')).length;
+                                                    return (
+                                                        <AccordionItem key={areaItem.topic} value={areaItem.topic} className="border-2 border-green-200 rounded-lg px-4 bg-green-50">
+                                                            <AccordionTrigger className="hover:no-underline py-3">
+                                                                <div className="flex items-center justify-between w-full pr-2">
+                                                                    <span className="font-semibold text-green-800">{areaItem.topic}</span>
+                                                                    <Badge variant="destructive" className="ml-2">{topicReviewCount} issues</Badge>
+                                                                </div>
+                                                            </AccordionTrigger>
+                                                            <AccordionContent className="pt-2 pb-3">
+                                                                {areaItem.suggestions && areaItem.suggestions.length > 0 ? (
+                                                                    <ul className="space-y-2">
+                                                                        {areaItem.suggestions.map((suggestion, idx) => (
+                                                                            <li key={idx} className="flex items-start gap-2 text-sm">
+                                                                                <CheckCircle2 className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                                                                                <span className="text-gray-700">{suggestion.suggestion}</span>
+                                                                            </li>
+                                                                        ))}
+                                                                    </ul>
+                                                                ) : (
+                                                                    <p className="text-sm text-muted-foreground italic">No recommendations available for this area.</p>
+                                                                )}
+                                                            </AccordionContent>
+                                                        </AccordionItem>
+                                                    );
+                                                })}
+                                            </Accordion>
+                                        ) : (
+                                            <div className="border-2 border-green-200 rounded-lg p-6 text-center bg-green-50">
+                                                <AlertTriangle className="h-12 w-12 text-green-400 mx-auto mb-2" />
+                                                <p className="text-sm text-muted-foreground">No recommendations available.</p>
+                                            </div>
+                                        )}
+                                    </div>
                                 </>
                             ) : (
-                                // For praise: Recommendations on left, reviews on right (same as critical)
+                                // For praise: Recommendations on right, reviews on left (same as critical)
                                 <>
+                                    
+                                    <ScrollArea className="h-full max-h-[480px] pr-4">
+                                        <div className="space-y-4">
+                                            {kpiDetails.reviews.length > 0 ? kpiDetails.reviews.map((review: Review) => {
+                                                const config = categoryConfig[review.sentiment as keyof typeof categoryConfig];
+                                                const PlatformIcon = getPlatformIcon(review.id);
+                                                const platformName = getPlatformName(review.id);
+                                                return (
+                                                    <div key={review.id} className={cn("border p-4 rounded-lg", `border-${config.color.split('-')[1]}-500`)}>
+                                                        <div className="flex justify-between items-start mb-2">
+                                                            <div>
+                                                                <p className="font-semibold text-sm">{review.guestName || `Guest ${review.id}`}</p>
+                                                                {(review.date && (typeof review.date !== 'string')) && <p className="text-xs text-muted-foreground">{format(new Date(2025, 10, Math.floor(Math.random() * 30) + 1) as Date, 'MMM d, yyyy')}</p>}
+                                                            </div>
+                                                            <StarRating rating={review.rating} size={16} />
+                                                        </div>
+                                                        <p className="text-sm text-muted-foreground italic mb-3">"{review.text}"</p>
+                                                        <div className="flex justify-between items-center">
+                                                            <div className="flex gap-2 flex-wrap items-center">
+                                                                 <Badge variant="outline" className={cn('flex items-center gap-1', config.badgeClass)}>
+                                                                  <config.icon className="h-3 w-3" />
+                                                                  {config.label}
+                                                                </Badge>
+                                                                <Badge variant="secondary">{review.topic}</Badge>
+                                                                <Tooltip>
+                                                                    <TooltipTrigger asChild>
+                                                                        <div className="flex items-center gap-1.5 bg-blue-50 px-2.5 py-1 rounded-full border border-blue-200 shadow-sm hover:shadow-md hover:bg-blue-100 hover:border-blue-300 transition-all cursor-pointer">
+                                                                            <PlatformIcon className="w-3.5 h-3.5" />
+                                                                            <span className="text-xs font-semibold text-blue-700">{platformName}</span>
+                                                                        </div>
+                                                                    </TooltipTrigger>
+                                                                    <TooltipContent>
+                                                                        <p>{platformName}</p>
+                                                                    </TooltipContent>
+                                                                </Tooltip>
+                                                            </div>
+                                                             <Tooltip>
+                                                                <TooltipTrigger asChild>
+                                                                    <Button onClick={() => handleReplyClick(review)} size="icon" className="rounded-full bg-primary/10 text-primary hover:bg-primary/20">
+                                                                        <Send className="h-4 w-4" />
+                                                                        <span className="sr-only">AI Reply</span>
+                                                                    </Button>
+                                                                </TooltipTrigger>
+                                                                <TooltipContent>
+                                                                <p>Generate AI Reply</p>
+                                                                </TooltipContent>
+                                                            </Tooltip>
+                                                        </div>
+                                                    </div>
+                                                )
+                                            }) : (
+                                                <div className="flex items-center justify-center h-full text-muted-foreground">
+                                                    <p>No reviews to display for this category.</p>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </ScrollArea>
                                     <div className="space-y-4">
                                         <h3 className="text-lg font-semibold text-green-700 flex items-center gap-2">
                                             <CheckCircle2 className="h-5 w-5" />
@@ -1741,62 +1839,6 @@ export function ReviewDashboard() {
                                             </div>
                                         )}
                                     </div>
-                                    <ScrollArea className="h-full max-h-[480px] pr-4">
-                                        <div className="space-y-4">
-                                            {kpiDetails.reviews.length > 0 ? kpiDetails.reviews.map((review: Review) => {
-                                                const config = categoryConfig[review.sentiment as keyof typeof categoryConfig];
-                                                const PlatformIcon = getPlatformIcon(review.id);
-                                                const platformName = getPlatformName(review.id);
-                                                return (
-                                                    <div key={review.id} className={cn("border p-4 rounded-lg", `border-${config.color.split('-')[1]}-500`)}>
-                                                        <div className="flex justify-between items-start mb-2">
-                                                            <div>
-                                                                <p className="font-semibold text-sm">{review.guestName || `Guest ${review.id}`}</p>
-                                                                {(review.date && (typeof review.date !== 'string')) && <p className="text-xs text-muted-foreground">{format(new Date(2025, 10, Math.floor(Math.random() * 30) + 1) as Date, 'MMM d, yyyy')}</p>}
-                                                            </div>
-                                                            <StarRating rating={review.rating} size={16} />
-                                                        </div>
-                                                        <p className="text-sm text-muted-foreground italic mb-3">"{review.text}"</p>
-                                                        <div className="flex justify-between items-center">
-                                                            <div className="flex gap-2 flex-wrap items-center">
-                                                                 <Badge variant="outline" className={cn('flex items-center gap-1', config.badgeClass)}>
-                                                                  <config.icon className="h-3 w-3" />
-                                                                  {config.label}
-                                                                </Badge>
-                                                                <Badge variant="secondary">{review.topic}</Badge>
-                                                                <Tooltip>
-                                                                    <TooltipTrigger asChild>
-                                                                        <div className="flex items-center gap-1.5 bg-blue-50 px-2.5 py-1 rounded-full border border-blue-200 shadow-sm hover:shadow-md hover:bg-blue-100 hover:border-blue-300 transition-all cursor-pointer">
-                                                                            <PlatformIcon className="w-3.5 h-3.5" />
-                                                                            <span className="text-xs font-semibold text-blue-700">{platformName}</span>
-                                                                        </div>
-                                                                    </TooltipTrigger>
-                                                                    <TooltipContent>
-                                                                        <p>{platformName}</p>
-                                                                    </TooltipContent>
-                                                                </Tooltip>
-                                                            </div>
-                                                             <Tooltip>
-                                                                <TooltipTrigger asChild>
-                                                                    <Button onClick={() => handleReplyClick(review)} size="icon" className="rounded-full bg-primary/10 text-primary hover:bg-primary/20">
-                                                                        <Send className="h-4 w-4" />
-                                                                        <span className="sr-only">AI Reply</span>
-                                                                    </Button>
-                                                                </TooltipTrigger>
-                                                                <TooltipContent>
-                                                                <p>Generate AI Reply</p>
-                                                                </TooltipContent>
-                                                            </Tooltip>
-                                                        </div>
-                                                    </div>
-                                                )
-                                            }) : (
-                                                <div className="flex items-center justify-center h-full text-muted-foreground">
-                                                    <p>No reviews to display for this category.</p>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </ScrollArea>
                                 </>
                             )}
                         </div>
@@ -1813,7 +1855,7 @@ export function ReviewDashboard() {
                 <CardDescription>A complete breakdown of guest feedback by category.</CardDescription>
             </CardHeader>
             <CardContent>
-                <Tabs defaultValue="negatives">
+                <Tabs defaultValue="positives">
                     <TabsList className="w-full flex justify-center gap-4">
                         <TabsTrigger value="positives" colorVariant="positive"><ThumbsUp className="mr-2 h-4 w-4" />Key Positives</TabsTrigger>
                         <TabsTrigger value="negatives" colorVariant="negative"><ThumbsDown className="mr-2 h-4 w-4" />Key Negatives</TabsTrigger>
@@ -1862,14 +1904,14 @@ export function ReviewDashboard() {
         />
       )}
 
-      <footer className="text-center text-xs text-gray-500 mt-8 p-6 bg-white rounded-lg shadow-md animate-in fade-in-0 slide-in-from-bottom-5 duration-600">
+      <footer className="text-center text-xs text-gray-500 mt-8 rounded-lg animate-in fade-in-0 slide-in-from-bottom-5 duration-600">
           <p>© {new Date().getFullYear()} Hospitality Pulse AI | Guest Analytics Intelligence Platform | {reviews.length} reviews analyzed</p>
           
           <div className="mt-4 flex justify-center items-center gap-4">
               <Button onClick={() => resetState()} variant="outline" style={{ display: "none" }}>
                   <Upload className="mr-2 h-4 w-4" /> New Analysis
               </Button>
-              <Button onClick={handleExport}>
+              <Button onClick={handleExport} style={{ display: "none" }}>
                   <Download className="mr-2 h-4 w-4" /> Export JSON Report
               </Button>
               {!isExported && (
