@@ -1538,7 +1538,7 @@ export function ReviewDashboard() {
             </div>
             <div>
                 <h1 className="text-4xl font-bold">⛷️ Igloo Skiing Resort</h1>
-                <p className="text-lg mt-2 opacity-90">AI Powered Review Insights - November Month</p>
+                <p className="text-lg mt-2 opacity-90">AI Powered Review Insights</p>
             </div>
           </div>
            <div className="relative z-10">
@@ -1588,6 +1588,7 @@ export function ReviewDashboard() {
                         
                     </TooltipProvider>
                 </div>
+                <p className="text-xs text-white mb-3 text-left tracking-wide uppercase pt-4">November Month</p>
             </div>
         </header>
 
@@ -1957,14 +1958,14 @@ export function ReviewDashboard() {
         />
       )}
 
-      <footer className="text-center text-xs text-gray-500 mt-8 p-6 bg-white rounded-lg shadow-md animate-in fade-in-0 slide-in-from-bottom-5 duration-600">
+      <footer className="text-center text-xs text-gray-500 mt-8 p-6 rounded-lg animate-in fade-in-0 slide-in-from-bottom-5 duration-600">
           <p>© {new Date().getFullYear()} Hospitality Pulse AI | Guest Analytics Intelligence Platform | {reviews.length} reviews analyzed</p>
           
           <div className="mt-4 flex justify-center items-center gap-4">
               <Button onClick={() => resetState()} variant="outline" style={{ display: "none" }}>
                   <Upload className="mr-2 h-4 w-4" /> New Analysis
               </Button>
-              <Button onClick={handleExport}>
+              <Button onClick={handleExport} style={{ display: "none" }}>
                   <Download className="mr-2 h-4 w-4" /> Export JSON Report
               </Button>
               {!isExported && (

@@ -82,21 +82,21 @@ export function FileUploader({ onFileUpload, onSurveyUpload, onTest }: FileUploa
             <UploadCloud className={cn("h-16 w-16 text-primary transition-all duration-300", isDragging && "scale-110")} />
         </div>
         <h3 className="text-2xl font-bold text-gray-800">Start Your Analysis</h3>
-        <p className="mt-2 text-gray-600 max-w-md">Drag and drop a file or choose an option below.</p>
-
-        <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
-            <OptionCard icon={FileSpreadsheet} title="Review File" description="Analyze a new Excel or CSV review file." buttonText="Upload Reviews" onClick={() => fileInputRef.current?.click()} />
-            <OptionCard icon={ClipboardList} title="Survey File" description="Upload a survey-formatted JSON file." buttonText="Upload Survey" onClick={() => surveyInputRef.current?.click()} />
-            <OptionCard icon={FileJson} title="Load Analysis" description="Load a previously exported analysis file." buttonText="Load JSON" onClick={() => analysisInputRef.current?.click()} isOutline />
+        {/* <p className="mt-2 text-gray-600 max-w-md">Drag and drop a file or choose an option below.</p> */}
+        {/* IMPORTANT: I NEED TO UNDO HERE */}
+        <div className="grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-8">
+            {/* <OptionCard icon={FileSpreadsheet} title="Review File" description="Analyze a new Excel or CSV review file." buttonText="Upload Reviews" onClick={() => fileInputRef.current?.click()} /> */}
+            {/* <OptionCard icon={ClipboardList} title="Survey File" description="Upload a survey-formatted JSON file." buttonText="Upload Survey" onClick={() => surveyInputRef.current?.click()} /> */}
+            <OptionCard icon={FileJson} title="Load Analysis" description="Load a previously exported analysis file." buttonText="Load JSON" onClick={() => analysisInputRef.current?.click()} />
         </div>
 
-        <div className="mt-8 text-center">
+        {/* <div className="mt-8 text-center">
             <p className="text-gray-500 mb-4">Or, see how it works with sample data:</p>
             <Button size="lg" variant="ghost" onClick={onTest}>
                 <TestTube2 className="mr-2" />
                 Test with Mock Data
             </Button>
-        </div>
+        </div> */}
       </div>
     </div>
   );
