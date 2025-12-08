@@ -216,7 +216,7 @@ export function ReviewDashboard() {
     
     let praiseInsight = '';
     if (positiveReviewsCount >= 50) {
-        praiseInsight = `${departmentsWithPraise} excellence areas out of ${totalAreas} total areas.`;
+        praiseInsight = `${departmentsWithPraise} excellent areas out of ${totalAreas} total areas.`;
     } else {
         praiseInsight = `${praiseAreasCount} excellence area${praiseAreasCount !== 1 ? 's' : ''} out of ${totalAreas} total areas. Top praise is '${topPraiseArea.topic}'.`;
     }
@@ -234,7 +234,7 @@ export function ReviewDashboard() {
           areaCount: positiveReviewsCount >= 50 ? departmentsWithPraise : 1,
       },
       critical: { 
-        value: `${negativeReviewsCount >= 50 ? departmentsWithIssues : 1} Area${(negativeReviewsCount >= 50 && departmentsWithIssues > 1) ? 's' : ''}`, 
+        value: `${negativeReviewsCount >= 50 ? departmentsWithIssues : 1} Area${(negativeReviewsCount >= 50 && departmentsWithIssues > 1) ? 's Needs Attention' : ''}`, 
         trend: `Top: ${topCriticalIssue.topic}`, 
         insight: criticalInsight,
         areaCount: negativeReviewsCount >= 50 ? departmentsWithIssues : 1,
@@ -857,197 +857,203 @@ export function ReviewDashboard() {
     setIsTestData(true);
     await new Promise(resolve => setTimeout(resolve, 500)); // simulate loading
 
+    // Utility to generate random November 2025 dates
+    const getRandomNovDate = () => {
+      const day = Math.floor(Math.random() * 30) + 1; // 1-30
+      return new Date(2025, 10, day); // Month 10 = November
+    };
+
     const mockReviews: Review[] = [
         // ROOMS - Critical Issues (40 reviews)
-        { id: 1, guestName: 'John Davis', text: "Room flooded due to bathroom plumbing issue. Called maintenance but took 45 minutes to respond. Water damage to furniture. Very frustrating experience.", sentiment: 'BAD', topic: 'Rooms', rating: 1.0, date: 'Week 1' },
-        { id: 2, guestName: 'Maria Garcia', text: "Air conditioning broken for entire stay. Room temperature was unbearable at 85 degrees. Front desk offered no alternative room.", sentiment: 'BAD', topic: 'Rooms', rating: 1.5, date: 'Week 2' },
-        { id: 3, guestName: 'Robert Kim', text: "Bed sheets had visible stains. Towels smelled musty. Room cleanliness was far below acceptable standards for a 4-star hotel.", sentiment: 'BAD', topic: 'Rooms', rating: 2.0, date: 'Week 3' },
-        { id: 4, guestName: 'Jennifer Lee', text: "Loud noise from HVAC system made sleep impossible. Complained twice but issue not resolved during 3-night stay.", sentiment: 'BAD', topic: 'Rooms', rating: 2.0, date: 'Week 4' },
-        { id: 5, guestName: 'Michael Torres', text: "Shower drain completely clogged. Water pooled 4 inches deep. Had to wait 2 hours for maintenance.", sentiment: 'BAD', topic: 'Rooms', rating: 1.5, date: 'Week 5' },
-        { id: 6, guestName: 'Lisa Wang', text: "Room key card stopped working 3 times. Very inconvenient having to go to front desk repeatedly.", sentiment: 'FARE', topic: 'Rooms', rating: 3.0, date: 'Week 6' },
-        { id: 7, guestName: 'David Brown', text: "Mattress was extremely uncomfortable and sagging in the middle. Woke up with severe back pain.", sentiment: 'BAD', topic: 'Rooms', rating: 2.0, date: 'Week 7' },
-        { id: 8, guestName: 'Sarah Johnson', text: "Bathroom light fixture hanging by wires. Clear safety hazard that should have been caught by housekeeping.", sentiment: 'BAD', topic: 'Rooms', rating: 1.0, date: 'Week 8' },
-        { id: 9, guestName: 'James Wilson', text: "Carpet stains throughout room. Furniture scratched and dated. Room needs serious renovation.", sentiment: 'FARE', topic: 'Rooms', rating: 3.0, date: 'Week 9' },
-        { id: 10, guestName: 'Patricia Martinez', text: "Window wouldn't close properly. Road noise kept us awake all night. Requested room change but none available.", sentiment: 'BAD', topic: 'Rooms', rating: 2.0, date: 'Week 10' },
-        { id: 11, guestName: 'Thomas Anderson', text: "TV remote didn't work. Called front desk but no batteries brought for 6 hours.", sentiment: 'FARE', topic: 'Rooms', rating: 3.0, date: 'Week 11' },
-        { id: 12, guestName: 'Amanda White', text: "Heater fan was incredibly loud. Temperature controls didn't work properly. Very uncomfortable stay.", sentiment: 'BAD', topic: 'Rooms', rating: 2.0, date: 'Week 12' },
-        { id: 13, guestName: 'Daniel Harris', text: "Hair dryer broken. Coffee maker leaked all over counter. Multiple appliance failures in one room.", sentiment: 'FARE', topic: 'Rooms', rating: 3.0, date: 'Week 13' },
-        { id: 14, guestName: 'Michelle Clark', text: "Mold visible in bathroom corners. Strong musty smell. Health concern that needs immediate attention.", sentiment: 'BAD', topic: 'Rooms', rating: 1.5, date: 'Week 14' },
-        { id: 15, guestName: 'Christopher Lewis', text: "Pillows were flat and lumpy. Bedding felt cheap and scratchy. Couldn't get comfortable sleep.", sentiment: 'FARE', topic: 'Rooms', rating: 3.0, date: 'Week 15' },
-        { id: 101, guestName: 'Gary Peterson', text: "Room smelled like smoke despite requesting non-smoking. Had to change rooms twice.", sentiment: 'BAD', topic: 'Rooms', rating: 2.0, date: 'Week 16' },
-        { id: 102, guestName: 'Helen Murphy', text: "Bathroom sink constantly dripping. Kept us awake at night. Maintenance never fixed it.", sentiment: 'FARE', topic: 'Rooms', rating: 3.0, date: 'Week 17' },
-        { id: 103, guestName: 'Ian Cooper', text: "Closet door fell off hinges when opened. Room clearly not inspected before our arrival.", sentiment: 'BAD', topic: 'Rooms', rating: 2.0, date: 'Week 18' },
-        { id: 104, guestName: 'Julia Rivera', text: "Mini-fridge was broken and smelled terrible. Had to throw away all our perishables.", sentiment: 'BAD', topic: 'Rooms', rating: 1.5, date: 'Week 19' },
-        { id: 105, guestName: 'Keith Bailey', text: "Curtains didn't close all the way. Morning sun woke us up at 5 AM every day.", sentiment: 'FARE', topic: 'Rooms', rating: 3.0, date: 'Week 20' },
-        { id: 106, guestName: 'Linda Foster', text: "Room phone didn't work. Had to use cell phone for everything including calling front desk.", sentiment: 'FARE', topic: 'Rooms', rating: 3.0, date: 'Week 1' },
-        { id: 107, guestName: 'Marcus Gray', text: "Toilet kept running constantly. Wasted water and created loud noise all night.", sentiment: 'BAD', topic: 'Rooms', rating: 2.0, date: 'Week 2' },
-        { id: 108, guestName: 'Nina Howard', text: "Shower curtain was moldy and torn. Basic hygiene standards not met.", sentiment: 'BAD', topic: 'Rooms', rating: 1.5, date: 'Week 3' },
-        { id: 109, guestName: 'Oscar Jenkins', text: "Thermostat stuck at 72 degrees. Room too warm but couldn't adjust temperature.", sentiment: 'FARE', topic: 'Rooms', rating: 3.0, date: 'Week 4' },
-        { id: 110, guestName: 'Paula Kelly', text: "Desk lamp bulb burned out. No spare bulbs provided despite calling housekeeping.", sentiment: 'FARE', topic: 'Rooms', rating: 3.0, date: 'Week 5' },
-        { id: 111, guestName: 'Quinn Long', text: "Bathtub surface was peeling and grimy. Clearly needs resurfacing or replacement.", sentiment: 'BAD', topic: 'Rooms', rating: 2.0, date: 'Week 6' },
-        { id: 112, guestName: 'Rita Mason', text: "Alarm clock broken. Almost late for important meeting. Basic amenities failing.", sentiment: 'FARE', topic: 'Rooms', rating: 3.0, date: 'Week 7' },
-        { id: 113, guestName: 'Sam Nelson', text: "Room door lock malfunctioned. Felt unsafe. Had to get security to let us in.", sentiment: 'BAD', topic: 'Rooms', rating: 1.5, date: 'Week 8' },
-        { id: 114, guestName: 'Tina Owen', text: "Sink faucet handle came off in my hand. Old fixtures need replacing throughout.", sentiment: 'BAD', topic: 'Rooms', rating: 2.0, date: 'Week 9' },
-        { id: 115, guestName: 'Ulysses Perry', text: "Bed frame squeaked loudly with any movement. Impossible to sleep comfortably.", sentiment: 'FARE', topic: 'Rooms', rating: 3.0, date: 'Week 10' },
+        { id: 1, guestName: 'John Davis', text: "Room flooded due to bathroom plumbing issue. Called maintenance but took 45 minutes to respond. Water damage to furniture. Very frustrating experience.", sentiment: 'BAD', topic: 'Rooms', rating: 1.0, date: getRandomNovDate() },
+        { id: 2, guestName: 'Maria Garcia', text: "Air conditioning broken for entire stay. Room temperature was unbearable at 85 degrees. Front desk offered no alternative room.", sentiment: 'BAD', topic: 'Rooms', rating: 1.5, date: getRandomNovDate() },
+        { id: 3, guestName: 'Robert Kim', text: "Bed sheets had visible stains. Towels smelled musty. Room cleanliness was far below acceptable standards for a 4-star hotel.", sentiment: 'BAD', topic: 'Rooms', rating: 2.0, date: getRandomNovDate() },
+        { id: 4, guestName: 'Jennifer Lee', text: "Loud noise from HVAC system made sleep impossible. Complained twice but issue not resolved during 3-night stay.", sentiment: 'BAD', topic: 'Rooms', rating: 2.0, date: getRandomNovDate() },
+        { id: 5, guestName: 'Michael Torres', text: "Shower drain completely clogged. Water pooled 4 inches deep. Had to wait 2 hours for maintenance.", sentiment: 'BAD', topic: 'Rooms', rating: 1.5, date: getRandomNovDate() },
+        { id: 6, guestName: 'Lisa Wang', text: "Room key card stopped working 3 times. Very inconvenient having to go to front desk repeatedly.", sentiment: 'FARE', topic: 'Rooms', rating: 3.0, date: getRandomNovDate() },
+        { id: 7, guestName: 'David Brown', text: "Mattress was extremely uncomfortable and sagging in the middle. Woke up with severe back pain.", sentiment: 'BAD', topic: 'Rooms', rating: 2.0, date: getRandomNovDate() },
+        { id: 8, guestName: 'Sarah Johnson', text: "Bathroom light fixture hanging by wires. Clear safety hazard that should have been caught by housekeeping.", sentiment: 'BAD', topic: 'Rooms', rating: 1.0, date: getRandomNovDate() },
+        { id: 9, guestName: 'James Wilson', text: "Carpet stains throughout room. Furniture scratched and dated. Room needs serious renovation.", sentiment: 'FARE', topic: 'Rooms', rating: 3.0, date: getRandomNovDate() },
+        { id: 10, guestName: 'Patricia Martinez', text: "Window wouldn't close properly. Road noise kept us awake all night. Requested room change but none available.", sentiment: 'BAD', topic: 'Rooms', rating: 2.0, date: getRandomNovDate() },
+        { id: 11, guestName: 'Thomas Anderson', text: "TV remote didn't work. Called front desk but no batteries brought for 6 hours.", sentiment: 'FARE', topic: 'Rooms', rating: 3.0, date: getRandomNovDate() },
+        { id: 12, guestName: 'Amanda White', text: "Heater fan was incredibly loud. Temperature controls didn't work properly. Very uncomfortable stay.", sentiment: 'BAD', topic: 'Rooms', rating: 2.0, date: getRandomNovDate() },
+        { id: 13, guestName: 'Daniel Harris', text: "Hair dryer broken. Coffee maker leaked all over counter. Multiple appliance failures in one room.", sentiment: 'FARE', topic: 'Rooms', rating: 3.0, date: getRandomNovDate() },
+        { id: 14, guestName: 'Michelle Clark', text: "Mold visible in bathroom corners. Strong musty smell. Health concern that needs immediate attention.", sentiment: 'BAD', topic: 'Rooms', rating: 1.5, date: getRandomNovDate() },
+        { id: 15, guestName: 'Christopher Lewis', text: "Pillows were flat and lumpy. Bedding felt cheap and scratchy. Couldn't get comfortable sleep.", sentiment: 'FARE', topic: 'Rooms', rating: 3.0, date: getRandomNovDate() },
+        { id: 101, guestName: 'Gary Peterson', text: "Room smelled like smoke despite requesting non-smoking. Had to change rooms twice.", sentiment: 'BAD', topic: 'Rooms', rating: 2.0, date: getRandomNovDate() },
+        { id: 102, guestName: 'Helen Murphy', text: "Bathroom sink constantly dripping. Kept us awake at night. Maintenance never fixed it.", sentiment: 'FARE', topic: 'Rooms', rating: 3.0, date: getRandomNovDate() },
+        { id: 103, guestName: 'Ian Cooper', text: "Closet door fell off hinges when opened. Room clearly not inspected before our arrival.", sentiment: 'BAD', topic: 'Rooms', rating: 2.0, date: getRandomNovDate() },
+        { id: 104, guestName: 'Julia Rivera', text: "Mini-fridge was broken and smelled terrible. Had to throw away all our perishables.", sentiment: 'BAD', topic: 'Amenities', rating: 1.5, date: getRandomNovDate() },
+        { id: 105, guestName: 'Keith Bailey', text: "Curtains didn't close all the way. Morning sun woke us up at 5 AM every day.", sentiment: 'FARE', topic: 'Rooms', rating: 3.0, date: getRandomNovDate() },
+        { id: 106, guestName: 'Linda Foster', text: "Room phone didn't work. Had to use cell phone for everything including calling front desk.", sentiment: 'FARE', topic: 'Rooms', rating: 3.0, date: getRandomNovDate() },
+        { id: 107, guestName: 'Marcus Gray', text: "Toilet kept running constantly. Wasted water and created loud noise all night.", sentiment: 'BAD', topic: 'Rooms', rating: 2.0, date: getRandomNovDate() },
+        { id: 108, guestName: 'Nina Howard', text: "Shower curtain was moldy and torn. Basic hygiene standards not met.", sentiment: 'BAD', topic: 'Rooms', rating: 1.5, date: getRandomNovDate() },
+        { id: 109, guestName: 'Oscar Jenkins', text: "Thermostat stuck at 72 degrees. Room too warm but couldn't adjust temperature.", sentiment: 'FARE', topic: 'Rooms', rating: 3.0, date: getRandomNovDate() },
+        { id: 110, guestName: 'Paula Kelly', text: "Desk lamp bulb burned out. No spare bulbs provided despite calling housekeeping.", sentiment: 'FARE', topic: 'Rooms', rating: 3.0, date: getRandomNovDate() },
+        { id: 111, guestName: 'Quinn Long', text: "Bathtub surface was peeling and grimy. Clearly needs resurfacing or replacement.", sentiment: 'BAD', topic: 'Rooms', rating: 2.0, date: getRandomNovDate() },
+        { id: 112, guestName: 'Rita Mason', text: "Alarm clock broken. Almost late for important meeting. Basic amenities failing.", sentiment: 'FARE', topic: 'Rooms', rating: 3.0, date: getRandomNovDate() },
+        { id: 113, guestName: 'Sam Nelson', text: "Room door lock malfunctioned. Felt unsafe. Had to get security to let us in.", sentiment: 'BAD', topic: 'Rooms', rating: 1.5, date: getRandomNovDate() },
+        { id: 114, guestName: 'Tina Owen', text: "Sink faucet handle came off in my hand. Old fixtures need replacing throughout.", sentiment: 'BAD', topic: 'Rooms', rating: 2.0, date: getRandomNovDate() },
+        { id: 115, guestName: 'Ulysses Perry', text: "Bed frame squeaked loudly with any movement. Impossible to sleep comfortably.", sentiment: 'FARE', topic: 'Rooms', rating: 3.0, date: getRandomNovDate() },
         
         // AMENITIES - Critical Issues (35 reviews)
-        { id: 16, guestName: 'Sarah Miller', text: "Connection dropped 4 times during video conferences. This is unacceptable for business guests. Attempted tech support but no solution provided.", sentiment: 'BAD', topic: 'Amenities', rating: 2.0, date: 'Week 1' },
-        { id: 17, guestName: 'Kevin Rodriguez', text: "WiFi completely unavailable for 8 hours. Business center closed. Had to work from coffee shop down the street.", sentiment: 'BAD', topic: 'Amenities', rating: 1.5, date: 'Week 2' },
-        { id: 18, guestName: 'Rachel Green', text: "Fitness center equipment broken. Three treadmills out of order. Weight room extremely limited.", sentiment: 'BAD', topic: 'Amenities', rating: 2.0, date: 'Week 3' },
-        { id: 19, guestName: 'Brian Taylor', text: "Pool was ice cold and clearly not heated as advertised. Kids couldn't swim. Very disappointing.", sentiment: 'BAD', topic: 'Amenities', rating: 2.0, date: 'Week 4' },
-        { id: 20, guestName: 'Jessica Moore', text: "Parking garage full every evening. Had to park 3 blocks away and walk. Not safe at night.", sentiment: 'BAD', topic: 'Amenities', rating: 2.0, date: 'Week 5' },
-        { id: 21, guestName: 'Andrew Jackson', text: "Business center printer jammed constantly. Scanners not working. Couldn't complete urgent work documents.", sentiment: 'FARE', topic: 'Amenities', rating: 3.0, date: 'Week 6' },
-        { id: 22, guestName: 'Emily Thompson', text: "Gym closes too early at 9 PM. For business travelers, this is very inconvenient.", sentiment: 'FARE', topic: 'Amenities', rating: 3.0, date: 'Week 7' },
-        { id: 23, guestName: 'Matthew White', text: "Vending machines empty or broken on multiple floors. No snacks available late night.", sentiment: 'FARE', topic: 'Amenities', rating: 3.0, date: 'Week 8' },
-        { id: 24, guestName: 'Nicole Martin', text: "Laundry room washers out of order. Dryers eating quarters without drying clothes. Total waste of money.", sentiment: 'BAD', topic: 'Amenities', rating: 2.0, date: 'Week 9' },
-        { id: 25, guestName: 'Joshua Garcia', text: "WiFi password changed without notice. Spent 30 minutes calling front desk to reconnect all devices.", sentiment: 'FARE', topic: 'Amenities', rating: 3.0, date: 'Week 10' },
-        { id: 116, guestName: 'Victor Quinn', text: "Pool area had broken tiles and dirty lounge chairs. Not maintained to acceptable standards.", sentiment: 'BAD', topic: 'Amenities', rating: 2.0, date: 'Week 11' },
-        { id: 117, guestName: 'Wendy Ross', text: "Business center computers running slow outdated software. Couldn't access files I needed.", sentiment: 'FARE', topic: 'Amenities', rating: 3.0, date: 'Week 12' },
-        { id: 118, guestName: 'Xavier Sanders', text: "Gym water fountain broken for entire week. No bottled water provided as alternative.", sentiment: 'FARE', topic: 'Amenities', rating: 3.0, date: 'Week 13' },
-        { id: 119, guestName: 'Yolanda Turner', text: "WiFi kept disconnecting in conference room during important client presentation. Embarrassing.", sentiment: 'BAD', topic: 'Amenities', rating: 1.5, date: 'Week 14' },
-        { id: 120, guestName: 'Zachary Underwood', text: "Pool towels ran out by noon. Had to use room towels. Poor inventory management.", sentiment: 'FARE', topic: 'Amenities', rating: 3.0, date: 'Week 15' },
-        { id: 121, guestName: 'Alice Vincent', text: "Parking garage elevator broken. Had to carry luggage up 3 flights of stairs.", sentiment: 'BAD', topic: 'Amenities', rating: 2.0, date: 'Week 16' },
-        { id: 122, guestName: 'Bruce Wallace', text: "Gym only has 2 yoga mats for 300-room hotel. Equipment selection very limited.", sentiment: 'FARE', topic: 'Amenities', rating: 3.0, date: 'Week 17' },
-        { id: 123, guestName: 'Carmen West', text: "Business center printer out of paper and toner. Staff didn't know how to refill it.", sentiment: 'FARE', topic: 'Amenities', rating: 3.0, date: 'Week 18' },
-        { id: 124, guestName: 'Derek Young', text: "WiFi speed so slow couldn't stream video calls. Advertised speeds completely inaccurate.", sentiment: 'BAD', topic: 'Amenities', rating: 2.0, date: 'Week 19' },
-        { id: 125, guestName: 'Elena Adams', text: "Pool closed unexpectedly for maintenance. No notice given to guests. Ruined our plans.", sentiment: 'BAD', topic: 'Amenities', rating: 2.0, date: 'Week 20' },
-        { id: 126, guestName: 'Felix Blake', text: "Gym equipment visibly dirty. Sanitizing wipes empty. Hygiene concerns during flu season.", sentiment: 'BAD', topic: 'Amenities', rating: 2.0, date: 'Week 1' },
-        { id: 127, guestName: 'Grace Cole', text: "Parking garage poorly lit. Felt unsafe walking to car at night. Security concerns.", sentiment: 'BAD', topic: 'Amenities', rating: 2.0, date: 'Week 2' },
-        { id: 128, guestName: 'Henry Dixon', text: "Conference WiFi couldn't support 20 simultaneous connections. Totally inadequate for business.", sentiment: 'BAD', topic: 'Amenities', rating: 1.5, date: 'Week 3' },
-        { id: 129, guestName: 'Iris Evans', text: "Pool water cloudy and chemicals smell too strong. Water quality questionable.", sentiment: 'BAD', topic: 'Amenities', rating: 2.0, date: 'Week 4' },
-        { id: 130, guestName: 'Jack Ford', text: "Fitness center closes at 10 PM on weekends. Too early for guests wanting evening workout.", sentiment: 'FARE', topic: 'Amenities', rating: 3.0, date: 'Week 5' },
-        { id: 131, guestName: 'Karen Gray', text: "Business center chairs uncomfortable for working. No proper desk setup for laptops.", sentiment: 'FARE', topic: 'Amenities', rating: 3.0, date: 'Week 6' },
-        { id: 132, guestName: 'Leo Hill', text: "Pool area music too loud. Couldn't relax. No volume control or quiet zones.", sentiment: 'FARE', topic: 'Amenities', rating: 3.0, date: 'Week 7' },
-        { id: 133, guestName: 'Megan Irwin', text: "Gym equipment reservation system confusing. Couldn't figure out how to book time slot.", sentiment: 'FARE', topic: 'Amenities', rating: 3.0, date: 'Week 8' },
-        { id: 134, guestName: 'Nathan Jones', text: "WiFi requires re-authentication every 2 hours. Extremely annoying for work.", sentiment: 'FARE', topic: 'Amenities', rating: 3.0, date: 'Week 9' },
-        { id: 135, guestName: 'Olivia King', text: "Pool area has no shade structures. Unbearable during afternoon heat.", sentiment: 'FARE', topic: 'Amenities', rating: 3.0, date: 'Week 10' },
+        { id: 16, guestName: 'Sarah Miller', text: "Connection dropped 4 times during video conferences. This is unacceptable for business guests. Attempted tech support but no solution provided.", sentiment: 'BAD', topic: 'Amenities', rating: 2.0, date: getRandomNovDate() },
+        { id: 17, guestName: 'Kevin Rodriguez', text: "WiFi completely unavailable for 8 hours. Business center closed. Had to work from coffee shop down the street.", sentiment: 'BAD', topic: 'Amenities', rating: 1.5, date: getRandomNovDate() },
+        { id: 18, guestName: 'Rachel Green', text: "Fitness center equipment broken. Three treadmills out of order. Weight room extremely limited.", sentiment: 'BAD', topic: 'Amenities', rating: 2.0, date: getRandomNovDate() },
+        { id: 19, guestName: 'Brian Taylor', text: "Pool was ice cold and clearly not heated as advertised. Kids couldn't swim. Very disappointing.", sentiment: 'BAD', topic: 'Amenities', rating: 2.0, date: getRandomNovDate() },
+        { id: 20, guestName: 'Jessica Moore', text: "Parking garage full every evening. Had to park 3 blocks away and walk. Not safe at night.", sentiment: 'BAD', topic: 'Amenities', rating: 2.0, date: getRandomNovDate() },
+        { id: 21, guestName: 'Andrew Jackson', text: "Business center printer jammed constantly. Scanners not working. Couldn't complete urgent work documents.", sentiment: 'FARE', topic: 'Amenities', rating: 3.0, date: getRandomNovDate() },
+        { id: 22, guestName: 'Emily Thompson', text: "Gym closes too early at 9 PM. For business travelers, this is very inconvenient.", sentiment: 'FARE', topic: 'Amenities', rating: 3.0, date: getRandomNovDate() },
+        { id: 23, guestName: 'Matthew White', text: "Vending machines empty or broken on multiple floors. No snacks available late night.", sentiment: 'FARE', topic: 'Amenities', rating: 3.0, date: getRandomNovDate() },
+        { id: 24, guestName: 'Nicole Martin', text: "Laundry room washers out of order. Dryers eating quarters without drying clothes. Total waste of money.", sentiment: 'BAD', topic: 'Amenities', rating: 2.0, date: getRandomNovDate() },
+        { id: 25, guestName: 'Joshua Garcia', text: "WiFi password changed without notice. Spent 30 minutes calling front desk to reconnect all devices.", sentiment: 'FARE', topic: 'Amenities', rating: 3.0, date: getRandomNovDate() },
+        { id: 116, guestName: 'Victor Quinn', text: "Pool area had broken tiles and dirty lounge chairs. Not maintained to acceptable standards.", sentiment: 'BAD', topic: 'Amenities', rating: 2.0, date: getRandomNovDate() },
+        { id: 117, guestName: 'Wendy Ross', text: "Business center computers running slow outdated software. Couldn't access files I needed.", sentiment: 'FARE', topic: 'Amenities', rating: 3.0, date: getRandomNovDate() },
+        { id: 118, guestName: 'Xavier Sanders', text: "Gym water fountain broken for entire week. No bottled water provided as alternative.", sentiment: 'FARE', topic: 'Amenities', rating: 3.0, date: getRandomNovDate() },
+        { id: 119, guestName: 'Yolanda Turner', text: "WiFi kept disconnecting in conference room during important client presentation. Embarrassing.", sentiment: 'BAD', topic: 'Amenities', rating: 1.5, date: getRandomNovDate() },
+        { id: 120, guestName: 'Zachary Underwood', text: "Pool towels ran out by noon. Had to use room towels. Poor inventory management.", sentiment: 'FARE', topic: 'Amenities', rating: 3.0, date: getRandomNovDate() },
+        { id: 121, guestName: 'Alice Vincent', text: "Parking garage elevator broken. Had to carry luggage up 3 flights of stairs.", sentiment: 'BAD', topic: 'Amenities', rating: 2.0, date: getRandomNovDate() },
+        { id: 122, guestName: 'Bruce Wallace', text: "Gym only has 2 yoga mats for 300-room hotel. Equipment selection very limited.", sentiment: 'FARE', topic: 'Amenities', rating: 3.0, date: getRandomNovDate() },
+        { id: 123, guestName: 'Carmen West', text: "Business center printer out of paper and toner. Staff didn't know how to refill it.", sentiment: 'FARE', topic: 'Amenities', rating: 3.0, date: getRandomNovDate() },
+        { id: 124, guestName: 'Derek Young', text: "WiFi speed so slow couldn't stream video calls. Advertised speeds completely inaccurate.", sentiment: 'BAD', topic: 'Amenities', rating: 2.0, date: getRandomNovDate() },
+        { id: 125, guestName: 'Elena Adams', text: "Pool closed unexpectedly for maintenance. No notice given to guests. Ruined our plans.", sentiment: 'BAD', topic: 'Amenities', rating: 2.0, date: getRandomNovDate() },
+        { id: 126, guestName: 'Felix Blake', text: "Gym equipment visibly dirty. Sanitizing wipes empty. Hygiene concerns during flu season.", sentiment: 'BAD', topic: 'Amenities', rating: 2.0, date: getRandomNovDate() },
+        { id: 127, guestName: 'Grace Cole', text: "Parking garage poorly lit. Felt unsafe walking to car at night. Security concerns.", sentiment: 'BAD', topic: 'Amenities', rating: 2.0, date: getRandomNovDate() },
+        { id: 128, guestName: 'Henry Dixon', text: "Conference WiFi couldn't support 20 simultaneous connections. Totally inadequate for business.", sentiment: 'BAD', topic: 'Amenities', rating: 1.5, date: getRandomNovDate() },
+        { id: 129, guestName: 'Iris Evans', text: "Pool water cloudy and chemicals smell too strong. Water quality questionable.", sentiment: 'BAD', topic: 'Amenities', rating: 2.0, date: getRandomNovDate() },
+        { id: 130, guestName: 'Jack Ford', text: "Fitness center closes at 10 PM on weekends. Too early for guests wanting evening workout.", sentiment: 'FARE', topic: 'Amenities', rating: 3.0, date: getRandomNovDate() },
+        { id: 131, guestName: 'Karen Gray', text: "Business center chairs uncomfortable for working. No proper desk setup for laptops.", sentiment: 'FARE', topic: 'Amenities', rating: 3.0, date: getRandomNovDate() },
+        { id: 132, guestName: 'Leo Hill', text: "Pool area music too loud. Couldn't relax. No volume control or quiet zones.", sentiment: 'FARE', topic: 'Amenities', rating: 3.0, date: getRandomNovDate() },
+        { id: 133, guestName: 'Megan Irwin', text: "Gym equipment reservation system confusing. Couldn't figure out how to book time slot.", sentiment: 'FARE', topic: 'Amenities', rating: 3.0, date: getRandomNovDate() },
+        { id: 134, guestName: 'Nathan Jones', text: "WiFi requires re-authentication every 2 hours. Extremely annoying for work.", sentiment: 'FARE', topic: 'Amenities', rating: 3.0, date: getRandomNovDate() },
+        { id: 135, guestName: 'Olivia King', text: "Pool area has no shade structures. Unbearable during afternoon heat.", sentiment: 'FARE', topic: 'Amenities', rating: 3.0, date: getRandomNovDate() },
         
         // FRONT DESK - Mixed (30 reviews: 15 bad, 15 excellent)
-        { id: 26, guestName: 'Emily White', text: "Long wait times during peak hours for check-in. The front desk seemed understaffed and overwhelmed.", sentiment: 'FARE', topic: 'Front Desk', rating: 3.0, date: 'Week 1' },
-        { id: 27, guestName: 'Amanda Johnson', text: "As a returning guest, I can confirm the hotel maintains excellent standards. Fresh linens, spotless bathroom, and the front desk team went above and beyond.", sentiment: 'BEST', topic: 'Front Desk', rating: 5.0, date: 'Week 2' },
-        { id: 28, guestName: 'Steven Davis', text: "Front desk agent was rude and dismissive when I reported room issues. Made me feel like a burden.", sentiment: 'BAD', topic: 'Front Desk', rating: 2.0, date: 'Week 3' },
-        { id: 29, guestName: 'Karen Williams', text: "Check-in line took 45 minutes. Only one agent working during busy Friday evening arrival.", sentiment: 'BAD', topic: 'Front Desk', rating: 2.0, date: 'Week 4' },
-        { id: 30, guestName: 'Richard Martinez', text: "Front desk staff remembered my name from previous visit. Upgraded my room without asking. Outstanding service!", sentiment: 'BEST', topic: 'Front Desk', rating: 5.0, date: 'Week 5' },
-        { id: 31, guestName: 'Laura Chen', text: "Reservation was lost in system. Had to wait while agent manually entered everything. Poor organization.", sentiment: 'FARE', topic: 'Front Desk', rating: 3.0, date: 'Week 6' },
-        { id: 32, guestName: 'George Thompson', text: "Jessica at front desk went above and beyond to help with local restaurant recommendations. So helpful and friendly!", sentiment: 'BEST', topic: 'Front Desk', rating: 5.0, date: 'Week 7' },
-        { id: 33, guestName: 'Diana Rodriguez', text: "Late checkout request denied without explanation. Felt unwelcome and rushed.", sentiment: 'FARE', topic: 'Front Desk', rating: 3.0, date: 'Week 8' },
-        { id: 34, guestName: 'Paul Jackson', text: "Front desk team handled our wedding group with professionalism. Coordinated everything perfectly. Couldn't have been better!", sentiment: 'BEST', topic: 'Front Desk', rating: 5.0, date: 'Week 9' },
-        { id: 35, guestName: 'Monica Taylor', text: "Wake-up call never came. Almost missed important meeting. Front desk offered no apology.", sentiment: 'BAD', topic: 'Front Desk', rating: 2.0, date: 'Week 10' },
+        { id: 26, guestName: 'Emily White', text: "Long wait times during peak hours for check-in. The front desk seemed understaffed and overwhelmed.", sentiment: 'FARE', topic: 'Front Desk', rating: 3.0, date: getRandomNovDate() },
+        { id: 27, guestName: 'Amanda Johnson', text: "As a returning guest, I can confirm the hotel maintains excellent standards. Fresh linens, spotless bathroom, and the front desk team went above and beyond.", sentiment: 'BEST', topic: 'Front Desk', rating: 5.0, date: getRandomNovDate() },
+        { id: 28, guestName: 'Steven Davis', text: "Front desk agent was rude and dismissive when I reported room issues. Made me feel like a burden.", sentiment: 'BAD', topic: 'Front Desk', rating: 2.0, date: getRandomNovDate() },
+        { id: 29, guestName: 'Karen Williams', text: "Check-in line took 45 minutes. Only one agent working during busy Friday evening arrival.", sentiment: 'BAD', topic: 'Front Desk', rating: 2.0, date: getRandomNovDate() },
+        { id: 30, guestName: 'Richard Martinez', text: "Front desk staff remembered my name from previous visit. Upgraded my room without asking. Outstanding service!", sentiment: 'BEST', topic: 'Front Desk', rating: 5.0, date: getRandomNovDate() },
+        { id: 31, guestName: 'Laura Chen', text: "Reservation was lost in system. Had to wait while agent manually entered everything. Poor organization.", sentiment: 'FARE', topic: 'Front Desk', rating: 3.0, date: getRandomNovDate() },
+        { id: 32, guestName: 'George Thompson', text: "Jessica at front desk went above and beyond to help with local restaurant recommendations. So helpful and friendly!", sentiment: 'BEST', topic: 'Front Desk', rating: 5.0, date: getRandomNovDate() },
+        { id: 33, guestName: 'Diana Rodriguez', text: "Late checkout request denied without explanation. Felt unwelcome and rushed.", sentiment: 'FARE', topic: 'Front Desk', rating: 3.0, date: getRandomNovDate() },
+        { id: 34, guestName: 'Paul Jackson', text: "Front desk team handled our wedding group with professionalism. Coordinated everything perfectly. Couldn't have been better!", sentiment: 'BEST', topic: 'Front Desk', rating: 5.0, date: getRandomNovDate() },
+        { id: 35, guestName: 'Monica Taylor', text: "Wake-up call never came. Almost missed important meeting. Front desk offered no apology.", sentiment: 'BAD', topic: 'Front Desk', rating: 2.0, date: getRandomNovDate() },
         
         // DINING - Excellent (50 reviews, mostly positive)
-        { id: 36, guestName: 'Chris Green', text: "The breakfast buffet was outstanding. Great variety and very fresh. The omelette station was a highlight.", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: 'Week 1' },
-        { id: 37, guestName: 'Susan Miller', text: "Restaurant chef personally came to our table to ensure everything was perfect. Food quality exceptional!", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: 'Week 2' },
-        { id: 38, guestName: 'Mark Anderson', text: "Best hotel breakfast I've ever had. Fresh fruit, hot entrees, amazing pastries. Will come back just for this!", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: 'Week 3' },
-        { id: 39, guestName: 'Barbara Wilson', text: "Evening room service was prompt and food arrived hot. Portions generous and presentation beautiful.", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: 'Week 4' },
-        { id: 40, guestName: 'Donald Harris', text: "Restaurant accommodated all our dietary restrictions perfectly. Gluten-free options were delicious.", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: 'Week 5' },
-        { id: 41, guestName: 'Carol Martinez', text: "Lunch menu had amazing variety. Salmon was cooked to perfection. Server was attentive and knowledgeable.", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: 'Week 6' },
-        { id: 42, guestName: 'Joseph Lee', text: "Bar menu exceeded expectations. Craft cocktails were creative and well-balanced. Great atmosphere too.", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: 'Week 7' },
-        { id: 43, guestName: 'Nancy Brown', text: "Breakfast buffet quality consistent every morning. Staff kept stations stocked and clean throughout service.", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: 'Week 8' },
-        { id: 44, guestName: 'William Garcia', text: "Sunday brunch was incredible. Live cooking stations, fresh seafood, unlimited champagne. Worth every penny!", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: 'Week 9' },
-        { id: 45, guestName: 'Sandra Kim', text: "Coffee quality outstanding. Barista made perfect cappuccinos. Nice to have quality coffee in hotel.", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: 'Week 10' },
-        { id: 46, guestName: 'Edward Clark', text: "Dinner service in restaurant was elegant. Wine pairing suggestions were spot on. Memorable dining experience.", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: 'Week 11' },
-        { id: 47, guestName: 'Helen Davis', text: "Kids menu was creative and healthy options available. My children actually ate vegetables here!", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: 'Week 12' },
-        { id: 48, guestName: 'Raymond White', text: "Breakfast server Maria remembered my order from previous day. Personal touches make all the difference.", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: 'Week 13' },
-        { id: 49, guestName: 'Betty Rodriguez', text: "Room service breakfast arrived exactly on time. Everything hot and fresh. Great way to start the day.", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: 'Week 14' },
-        { id: 50, guestName: 'Frank Thomas', text: "Restaurant wine list impressive. Sommelier helped us choose perfect bottle for our anniversary dinner.", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: 'Week 15' },
-        { id: 136, guestName: 'Peter Lane', text: "Pancakes at breakfast were fluffy and delicious. Syrup selection impressive with real maple.", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: 'Week 16' },
-        { id: 137, guestName: 'Quinn Miller', text: "Lunch salad bar fresh with high-quality ingredients. Dressings made in-house were amazing.", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: 'Week 17' },
-        { id: 138, guestName: 'Rose Nash', text: "Dinner steak cooked to perfection. Chef came out to check on our meal personally.", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: 'Week 18' },
-        { id: 139, guestName: 'Steve Owen', text: "Breakfast eggs benedict best I've had. Hollandaise sauce perfectly balanced.", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: 'Week 19' },
-        { id: 140, guestName: 'Tara Phillips', text: "Restaurant ambiance romantic and elegant. Perfect for our anniversary celebration.", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: 'Week 20' },
-        { id: 141, guestName: 'Uma Quinn', text: "Room service presentation worthy of fine dining. Food temperature perfect on arrival.", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: 'Week 1' },
-        { id: 142, guestName: 'Vince Ross', text: "Breakfast pastries clearly made fresh daily. Croissants rival best Parisian bakeries.", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: 'Week 2' },
-        { id: 143, guestName: 'Wilma Stone', text: "Lunch soup of the day changes daily and always delicious. Chef's creativity impressive.", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: 'Week 3' },
-        { id: 144, guestName: 'Xavier Turner', text: "Restaurant server remembered dietary restrictions from previous visit. Excellent attention to detail.", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: 'Week 4' },
-        { id: 145, guestName: 'Yvonne Underwood', text: "Breakfast smoothies made fresh to order. Healthy options plentiful and delicious.", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: 'Week 5' },
-        { id: 166, guestName: 'Aaron Barnes', text: "Dinner desserts were extraordinary. Chocolate lava cake melted perfectly. Five-star quality.", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: 'Week 6' },
-        { id: 167, guestName: 'Bella Carter', text: "Lunch portions generous and perfectly plated. Every dish looked and tasted restaurant-quality.", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: 'Week 7' },
+        { id: 36, guestName: 'Chris Green', text: "The breakfast buffet was outstanding. Great variety and very fresh. The omelette station was a highlight.", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: getRandomNovDate() },
+        { id: 37, guestName: 'Susan Miller', text: "Restaurant chef personally came to our table to ensure everything was perfect. Food quality exceptional!", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: getRandomNovDate() },
+        { id: 38, guestName: 'Mark Anderson', text: "Best hotel breakfast I've ever had. Fresh fruit, hot entrees, amazing pastries. Will come back just for this!", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: getRandomNovDate() },
+        { id: 39, guestName: 'Barbara Wilson', text: "Evening room service was prompt and food arrived hot. Portions generous and presentation beautiful.", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: getRandomNovDate() },
+        { id: 40, guestName: 'Donald Harris', text: "Restaurant accommodated all our dietary restrictions perfectly. Gluten-free options were delicious.", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: getRandomNovDate() },
+        { id: 41, guestName: 'Carol Martinez', text: "Lunch menu had amazing variety. Salmon was cooked to perfection. Server was attentive and knowledgeable.", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: getRandomNovDate() },
+        { id: 42, guestName: 'Joseph Lee', text: "Bar menu exceeded expectations. Craft cocktails were creative and well-balanced. Great atmosphere too.", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: getRandomNovDate() },
+        { id: 43, guestName: 'Nancy Brown', text: "Breakfast buffet quality consistent every morning. Staff kept stations stocked and clean throughout service.", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: getRandomNovDate() },
+        { id: 44, guestName: 'William Garcia', text: "Sunday brunch was incredible. Live cooking stations, fresh seafood, unlimited champagne. Worth every penny!", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: getRandomNovDate() },
+        { id: 45, guestName: 'Sandra Kim', text: "Coffee quality outstanding. Barista made perfect cappuccinos. Nice to have quality coffee in hotel.", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: getRandomNovDate() },
+        { id: 46, guestName: 'Edward Clark', text: "Dinner service in restaurant was elegant. Wine pairing suggestions were spot on. Memorable dining experience.", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: getRandomNovDate() },
+        { id: 47, guestName: 'Helen Davis', text: "Kids menu was creative and healthy options available. My children actually ate vegetables here!", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: getRandomNovDate() },
+        { id: 48, guestName: 'Raymond White', text: "Breakfast server Maria remembered my order from previous day. Personal touches make all the difference.", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: getRandomNovDate() },
+        { id: 49, guestName: 'Betty Rodriguez', text: "Room service breakfast arrived exactly on time. Everything hot and fresh. Great way to start the day.", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: getRandomNovDate() },
+        { id: 50, guestName: 'Frank Thomas', text: "Restaurant wine list impressive. Sommelier helped us choose perfect bottle for our anniversary dinner.", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: getRandomNovDate() },
+        { id: 136, guestName: 'Peter Lane', text: "Pancakes at breakfast were fluffy and delicious. Syrup selection impressive with real maple.", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: getRandomNovDate() },
+        { id: 137, guestName: 'Quinn Miller', text: "Lunch salad bar fresh with high-quality ingredients. Dressings made in-house were amazing.", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: getRandomNovDate() },
+        { id: 138, guestName: 'Rose Nash', text: "Dinner steak cooked to perfection. Chef came out to check on our meal personally.", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: getRandomNovDate() },
+        { id: 139, guestName: 'Steve Owen', text: "Breakfast eggs benedict best I've had. Hollandaise sauce perfectly balanced.", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: getRandomNovDate() },
+        { id: 140, guestName: 'Tara Phillips', text: "Restaurant ambiance romantic and elegant. Perfect for our anniversary celebration.", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: getRandomNovDate() },
+        { id: 141, guestName: 'Uma Quinn', text: "Room service presentation worthy of fine dining. Food temperature perfect on arrival.", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: getRandomNovDate() },
+        { id: 142, guestName: 'Vince Ross', text: "Breakfast pastries clearly made fresh daily. Croissants rival best Parisian bakeries.", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: getRandomNovDate() },
+        { id: 143, guestName: 'Wilma Stone', text: "Lunch soup of the day changes daily and always delicious. Chef's creativity impressive.", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: getRandomNovDate() },
+        { id: 144, guestName: 'Xavier Turner', text: "Restaurant server remembered dietary restrictions from previous visit. Excellent attention to detail.", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: getRandomNovDate() },
+        { id: 145, guestName: 'Yvonne Underwood', text: "Breakfast smoothies made fresh to order. Healthy options plentiful and delicious.", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: getRandomNovDate() },
+        { id: 166, guestName: 'Aaron Barnes', text: "Dinner desserts were extraordinary. Chocolate lava cake melted perfectly. Five-star quality.", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: getRandomNovDate() },
+        { id: 167, guestName: 'Bella Carter', text: "Lunch portions generous and perfectly plated. Every dish looked and tasted restaurant-quality.", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: getRandomNovDate() },
         
         // SERVICE - Excellent (42 reviews)
-        { id: 51, guestName: 'David Chen', text: "My massage at the spa was incredibly relaxing. The therapist was professional and skilled. A truly five-star experience.", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: 'Week 1' },
-        { id: 52, guestName: 'Lisa Thompson', text: "Concierge secured impossible-to-get theater tickets for us. Went above and beyond expectations!", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: 'Week 2' },
-        { id: 53, guestName: 'Michael Brown', text: "Housekeeping staff was exceptional. Room always immaculate. Left thoughtful notes and extra amenities.", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: 'Week 3' },
-        { id: 54, guestName: 'Patricia Garcia', text: "Valet service was incredibly efficient. Staff friendly and cars always ready quickly. Professional operation.", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: 'Week 4' },
-        { id: 55, guestName: 'Robert Martinez', text: "Spa facial was amazing. Products used were high-quality. Esthetician explained everything thoroughly.", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: 'Week 5' },
-        { id: 56, guestName: 'Jennifer Wilson', text: "Bell staff helped with all our luggage and gave great local tips. Made check-in so smooth.", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: 'Week 6' },
-        { id: 57, guestName: 'William Lee', text: "Turndown service was lovely. Chocolates, fresh towels, lights dimmed. Nice touch of luxury.", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: 'Week 7' },
-        { id: 58, guestName: 'Mary Anderson', text: "Concierge arranged perfect day trip itinerary. Every recommendation was excellent. Such valuable service.", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: 'Week 8' },
-        { id: 59, guestName: 'Charles Davis', text: "Doorman greeted us by name every time we returned. Small gesture but made us feel special.", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: 'Week 9' },
-        { id: 60, guestName: 'Elizabeth White', text: "Spa staff accommodated last-minute couples massage. Treatment was blissful. Best spa experience ever!", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: 'Week 10' },
-        { id: 146, guestName: 'Zane Vincent', text: "Bellhop helped carry groceries to room even though not required. Went beyond call of duty.", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: 'Week 11' },
-        { id: 147, guestName: 'Amy Wallace', text: "Housekeeping arranged flowers in vase for our anniversary without being asked. Thoughtful touch!", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: 'Week 12' },
-        { id: 148, guestName: 'Blake West', text: "Concierge booked hard-to-get spa appointment at external location. Impressive connections!", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: 'Week 13' },
-        { id: 149, guestName: 'Cora Young', text: "Valet remembered our car and had it ready before we asked. Exceptional attention to detail.", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: 'Week 14' },
-        { id: 150, guestName: 'Dean Adams', text: "Maintenance fixed issue within 10 minutes of calling. Quick response time impressive.", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: 'Week 15' },
-        { id: 151, guestName: 'Emma Blake', text: "Spa aromatherapy massage melted away stress. Therapist understood exactly what I needed.", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: 'Week 16' },
-        { id: 152, guestName: 'Frank Cole', text: "Concierge created custom walking tour map with all our interests marked. Above and beyond!", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: 'Week 17' },
-        { id: 153, guestName: 'Gina Dixon', text: "Housekeeping folded our clothes that were left on chair. Unexpected and appreciated service.", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: 'Week 18' },
-        { id: 154, guestName: 'Hugo Evans', text: "Bell staff arranged surprise birthday cake delivery to room. Made the day extra special!", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: 'Week 19' },
-        { id: 155, guestName: 'Ivy Ford', text: "Spa facial used organic products and felt luxurious. Skin glowed for days afterward.", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: 'Week 20' },
-        { id: 156, guestName: 'Jake Gray', text: "Concierge tracked down sold-out concert tickets for us. Went to extraordinary lengths.", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: 'Week 1' },
-        { id: 157, guestName: 'Kate Hill', text: "Housekeeping staff greeted us warmly every morning. Created welcoming atmosphere.", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: 'Week 2' },
-        { id: 158, guestName: 'Luke Irwin', text: "Valet service handled our vintage car with extra care. Clear respect for guests' property.", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: 'Week 3' },
-        { id: 159, guestName: 'Maya Jones', text: "Spa manicure lasted two weeks without chipping. High-quality products and skilled technician.", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: 'Week 4' },
-        { id: 160, guestName: 'Noah King', text: "Concierge remembered details from previous stay and made personalized recommendations. Impressive!", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: 'Week 5' },
-        { id: 161, guestName: 'Opal Lane', text: "Bellhop helped elderly parents with wheelchairs and luggage. Compassionate and patient service.", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: 'Week 6' },
-        { id: 162, guestName: 'Paul Miller', text: "Housekeeping replaced worn towels without being asked. Proactive attention to quality.", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: 'Week 7' },
-        { id: 163, guestName: 'Quinn Nash', text: "Spa couples massage perfectly synchronized. Both therapists equally skilled. Romantic experience.", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: 'Week 8' },
-        { id: 164, guestName: 'Ruby Owen', text: "Valet handled our rental car return coordination. Made checkout process seamless.", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: 'Week 9' },
-        { id: 165, guestName: 'Sam Phillips', text: "Concierge printed and organized all our travel documents. Saved us so much time!", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: 'Week 10' },
+        { id: 51, guestName: 'David Chen', text: "My massage at the spa was incredibly relaxing. The therapist was professional and skilled. A truly five-star experience.", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: getRandomNovDate() },
+        { id: 52, guestName: 'Lisa Thompson', text: "Concierge secured impossible-to-get theater tickets for us. Went above and beyond expectations!", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: getRandomNovDate() },
+        { id: 53, guestName: 'Michael Brown', text: "Housekeeping staff was exceptional. Room always immaculate. Left thoughtful notes and extra amenities.", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: getRandomNovDate() },
+        { id: 54, guestName: 'Patricia Garcia', text: "Valet service was incredibly efficient. Staff friendly and cars always ready quickly. Professional operation.", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: getRandomNovDate() },
+        { id: 55, guestName: 'Robert Martinez', text: "Spa facial was amazing. Products used were high-quality. Esthetician explained everything thoroughly.", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: getRandomNovDate() },
+        { id: 56, guestName: 'Jennifer Wilson', text: "Bell staff helped with all our luggage and gave great local tips. Made check-in so smooth.", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: getRandomNovDate() },
+        { id: 57, guestName: 'William Lee', text: "Turndown service was lovely. Chocolates, fresh towels, lights dimmed. Nice touch of luxury.", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: getRandomNovDate() },
+        { id: 58, guestName: 'Mary Anderson', text: "Concierge arranged perfect day trip itinerary. Every recommendation was excellent. Such valuable service.", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: getRandomNovDate() },
+        { id: 59, guestName: 'Charles Davis', text: "Doorman greeted us by name every time we returned. Small gesture but made us feel special.", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: getRandomNovDate() },
+        { id: 60, guestName: 'Elizabeth White', text: "Spa staff accommodated last-minute couples massage. Treatment was blissful. Best spa experience ever!", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: getRandomNovDate() },
+        { id: 146, guestName: 'Zane Vincent', text: "Bellhop helped carry groceries to room even though not required. Went beyond call of duty.", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: getRandomNovDate() },
+        { id: 147, guestName: 'Amy Wallace', text: "Housekeeping arranged flowers in vase for our anniversary without being asked. Thoughtful touch!", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: getRandomNovDate() },
+        { id: 148, guestName: 'Blake West', text: "Concierge booked hard-to-get spa appointment at external location. Impressive connections!", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: getRandomNovDate() },
+        { id: 149, guestName: 'Cora Young', text: "Valet remembered our car and had it ready before we asked. Exceptional attention to detail.", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: getRandomNovDate() },
+        { id: 150, guestName: 'Dean Adams', text: "Maintenance fixed issue within 10 minutes of calling. Quick response time impressive.", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: getRandomNovDate() },
+        { id: 151, guestName: 'Emma Blake', text: "Spa aromatherapy massage melted away stress. Therapist understood exactly what I needed.", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: getRandomNovDate() },
+        { id: 152, guestName: 'Frank Cole', text: "Concierge created custom walking tour map with all our interests marked. Above and beyond!", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: getRandomNovDate() },
+        { id: 153, guestName: 'Gina Dixon', text: "Housekeeping folded our clothes that were left on chair. Unexpected and appreciated service.", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: getRandomNovDate() },
+        { id: 154, guestName: 'Hugo Evans', text: "Bell staff arranged surprise birthday cake delivery to room. Made the day extra special!", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: getRandomNovDate() },
+        { id: 155, guestName: 'Ivy Ford', text: "Spa facial used organic products and felt luxurious. Skin glowed for days afterward.", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: getRandomNovDate() },
+        { id: 156, guestName: 'Jake Gray', text: "Concierge tracked down sold-out concert tickets for us. Went to extraordinary lengths.", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: getRandomNovDate() },
+        { id: 157, guestName: 'Kate Hill', text: "Housekeeping staff greeted us warmly every morning. Created welcoming atmosphere.", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: getRandomNovDate() },
+        { id: 158, guestName: 'Luke Irwin', text: "Valet service handled our vintage car with extra care. Clear respect for guests' property.", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: getRandomNovDate() },
+        { id: 159, guestName: 'Maya Jones', text: "Spa manicure lasted two weeks without chipping. High-quality products and skilled technician.", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: getRandomNovDate() },
+        { id: 160, guestName: 'Noah King', text: "Concierge remembered details from previous stay and made personalized recommendations. Impressive!", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: getRandomNovDate() },
+        { id: 161, guestName: 'Opal Lane', text: "Bellhop helped elderly parents with wheelchairs and luggage. Compassionate and patient service.", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: getRandomNovDate() },
+        { id: 162, guestName: 'Paul Miller', text: "Housekeeping replaced worn towels without being asked. Proactive attention to quality.", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: getRandomNovDate() },
+        { id: 163, guestName: 'Quinn Nash', text: "Spa couples massage perfectly synchronized. Both therapists equally skilled. Romantic experience.", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: getRandomNovDate() },
+        { id: 164, guestName: 'Ruby Owen', text: "Valet handled our rental car return coordination. Made checkout process seamless.", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: getRandomNovDate() },
+        { id: 165, guestName: 'Sam Phillips', text: "Concierge printed and organized all our travel documents. Saved us so much time!", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: getRandomNovDate() },
         
         // OTHER - Mixed (remaining reviews to reach 100)
-        { id: 61, guestName: 'Mike Brown', text: "Fairways poorly maintained & greens inconsistent. For a resort of this caliber, the pool area was a major letdown.", sentiment: 'BAD', topic: 'Other', rating: 2.0, date: 'Week 1' },
-        { id: 62, guestName: 'Laura Wilson', text: "The pool area was clean and the water temperature was perfect. However, it was a bit crowded in the afternoon.", sentiment: 'GOOD', topic: 'Other', rating: 4.0, date: 'Week 2' },
-        { id: 63, guestName: 'Jason Miller', text: "Hotel location is perfect. Walking distance to everything. Neighborhood felt safe even late at night.", sentiment: 'BEST', topic: 'Other', rating: 5.0, date: 'Week 3' },
-        { id: 64, guestName: 'Michelle Taylor', text: "Lobby design is beautiful and welcoming. Great place to meet clients. Comfortable seating areas.", sentiment: 'BEST', topic: 'Other', rating: 5.0, date: 'Week 4' },
-        { id: 65, guestName: 'Daniel Kim', text: "Noise from construction next door started at 7 AM every day. Hotel should have warned guests.", sentiment: 'FARE', topic: 'Other', rating: 3.0, date: 'Week 5' },
-        { id: 66, guestName: 'Angela Rodriguez', text: "Pet-friendly policy was wonderful. Dog bed and treats provided. Our pet felt welcome!", sentiment: 'BEST', topic: 'Other', rating: 5.0, date: 'Week 6' },
-        { id: 67, guestName: 'Timothy Jackson', text: "Hotel smelled like smoke despite being non-smoking. Very unpleasant throughout our stay.", sentiment: 'BAD', topic: 'Other', rating: 2.0, date: 'Week 7' },
-        { id: 68, guestName: 'Rebecca Harris', text: "Elevator wait times excessive during busy periods. Only 2 elevators for 15-story building.", sentiment: 'FARE', topic: 'Other', rating: 3.0, date: 'Week 8' },
-        { id: 69, guestName: 'Kenneth White', text: "Christmas decorations were absolutely stunning. Festive atmosphere made our holiday trip special.", sentiment: 'BEST', topic: 'Other', rating: 5.0, date: 'Week 9' },
-        { id: 70, guestName: 'Dorothy Martinez', text: "Hallway carpets badly stained and worn. Common areas need serious attention and updating.", sentiment: 'FARE', topic: 'Other', rating: 3.0, date: 'Week 10' },
+        { id: 61, guestName: 'Mike Brown', text: "Fairways poorly maintained & greens inconsistent. For a resort of this caliber, the pool area was a major letdown.", sentiment: 'BAD', topic: 'Other', rating: 2.0, date: getRandomNovDate() },
+        { id: 62, guestName: 'Laura Wilson', text: "The pool area was clean and the water temperature was perfect. However, it was a bit crowded in the afternoon.", sentiment: 'GOOD', topic: 'Other', rating: 4.0, date: getRandomNovDate() },
+        { id: 63, guestName: 'Jason Miller', text: "Hotel location is perfect. Walking distance to everything. Neighborhood felt safe even late at night.", sentiment: 'BEST', topic: 'Other', rating: 5.0, date: getRandomNovDate() },
+        { id: 64, guestName: 'Michelle Taylor', text: "Lobby design is beautiful and welcoming. Great place to meet clients. Comfortable seating areas.", sentiment: 'BEST', topic: 'Other', rating: 5.0, date: getRandomNovDate() },
+        { id: 65, guestName: 'Daniel Kim', text: "Noise from construction next door started at 7 AM every day. Hotel should have warned guests.", sentiment: 'FARE', topic: 'Other', rating: 3.0, date: getRandomNovDate() },
+        { id: 66, guestName: 'Angela Rodriguez', text: "Pet-friendly policy was wonderful. Dog bed and treats provided. Our pet felt welcome!", sentiment: 'BEST', topic: 'Other', rating: 5.0, date: getRandomNovDate() },
+        { id: 67, guestName: 'Timothy Jackson', text: "Hotel smelled like smoke despite being non-smoking. Very unpleasant throughout our stay.", sentiment: 'BAD', topic: 'Other', rating: 2.0, date: getRandomNovDate() },
+        { id: 68, guestName: 'Rebecca Harris', text: "Elevator wait times excessive during busy periods. Only 2 elevators for 15-story building.", sentiment: 'FARE', topic: 'Other', rating: 3.0, date: getRandomNovDate() },
+        { id: 69, guestName: 'Kenneth White', text: "Christmas decorations were absolutely stunning. Festive atmosphere made our holiday trip special.", sentiment: 'BEST', topic: 'Other', rating: 5.0, date: getRandomNovDate() },
+        { id: 70, guestName: 'Dorothy Martinez', text: "Hallway carpets badly stained and worn. Common areas need serious attention and updating.", sentiment: 'FARE', topic: 'Other', rating: 3.0, date: getRandomNovDate() },
         
         // Additional DINING reviews
-        { id: 71, guestName: 'Anthony Clark', text: "Breakfast wait time was 40 minutes. Restaurant understaffed for hotel size. Food good but service slow.", sentiment: 'FARE', topic: 'Dining', rating: 3.0, date: 'Week 16' },
-        { id: 72, guestName: 'Stephanie Lewis', text: "Vegetarian options at breakfast were creative and delicious. Chef clearly understands plant-based cuisine.", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: 'Week 17' },
-        { id: 73, guestName: 'Gregory Walker', text: "Happy hour appetizers were generous and tasty. Great value and fun atmosphere in the bar.", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: 'Week 18' },
-        { id: 74, guestName: 'Victoria Young', text: "In-room dining menu limited. Prices extremely high for average quality food. Expected better selection.", sentiment: 'FARE', topic: 'Dining', rating: 3.0, date: 'Week 19' },
-        { id: 75, guestName: 'Brian Allen', text: "Breakfast buffet replenished constantly. Everything fresh throughout service. Staff worked seamlessly.", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: 'Week 20' },
+        { id: 71, guestName: 'Anthony Clark', text: "Breakfast wait time was 40 minutes. Restaurant understaffed for hotel size. Food good but service slow.", sentiment: 'FARE', topic: 'Dining', rating: 3.0, date: getRandomNovDate() },
+        { id: 72, guestName: 'Stephanie Lewis', text: "Vegetarian options at breakfast were creative and delicious. Chef clearly understands plant-based cuisine.", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: getRandomNovDate() },
+        { id: 73, guestName: 'Gregory Walker', text: "Happy hour appetizers were generous and tasty. Great value and fun atmosphere in the bar.", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: getRandomNovDate() },
+        { id: 74, guestName: 'Victoria Young', text: "In-room dining menu limited. Prices extremely high for average quality food. Expected better selection.", sentiment: 'FARE', topic: 'Dining', rating: 3.0, date: getRandomNovDate() },
+        { id: 75, guestName: 'Brian Allen', text: "Breakfast buffet replenished constantly. Everything fresh throughout service. Staff worked seamlessly.", sentiment: 'BEST', topic: 'Dining', rating: 5.0, date: getRandomNovDate() },
         
         // Additional SERVICE reviews  
-        { id: 76, guestName: 'Christina King', text: "Housekeeping missed our room two days in a row. Had to call front desk both times to request service.", sentiment: 'FARE', topic: 'Service', rating: 3.0, date: 'Week 11' },
-        { id: 77, guestName: 'Scott Wright', text: "Bellhop went out of his way to help us find lost phone. Searched thoroughly and found it. Grateful for the effort!", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: 'Week 12' },
-        { id: 78, guestName: 'Deborah Scott', text: "Spa booking system confusing. Had to call multiple times to confirm appointment. Better online system needed.", sentiment: 'FARE', topic: 'Service', rating: 3.0, date: 'Week 13' },
-        { id: 79, guestName: 'Ronald Green', text: "Maintenance staff fixed our AC issue within 15 minutes. Quick response and professional service.", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: 'Week 14' },
-        { id: 80, guestName: 'Sharon Adams', text: "Lost item turned in by housekeeping. Honesty and integrity of staff is commendable.", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: 'Week 15' },
+        { id: 76, guestName: 'Christina King', text: "Housekeeping missed our room two days in a row. Had to call front desk both times to request service.", sentiment: 'FARE', topic: 'Service', rating: 3.0, date: getRandomNovDate() },
+        { id: 77, guestName: 'Scott Wright', text: "Bellhop went out of his way to help us find lost phone. Searched thoroughly and found it. Grateful for the effort!", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: getRandomNovDate() },
+        { id: 78, guestName: 'Deborah Scott', text: "Spa booking system confusing. Had to call multiple times to confirm appointment. Better online system needed.", sentiment: 'FARE', topic: 'Service', rating: 3.0, date: getRandomNovDate() },
+        { id: 79, guestName: 'Ronald Green', text: "Maintenance staff fixed our AC issue within 15 minutes. Quick response and professional service.", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: getRandomNovDate() },
+        { id: 80, guestName: 'Sharon Adams', text: "Lost item turned in by housekeeping. Honesty and integrity of staff is commendable.", sentiment: 'BEST', topic: 'Service', rating: 5.0, date: getRandomNovDate() },
         
         // Additional AMENITIES reviews
-        { id: 81, guestName: 'Eric Baker', text: "Rooftop terrace views are spectacular. Great place to unwind in the evening. Hidden gem!", sentiment: 'BEST', topic: 'Amenities', rating: 5.0, date: 'Week 11' },
-        { id: 82, guestName: 'Cynthia Nelson', text: "Hot tub was lukewarm and jets barely working. Disappointing after long day of sightseeing.", sentiment: 'FARE', topic: 'Amenities', rating: 3.0, date: 'Week 12' },
-        { id: 83, guestName: 'Jerry Carter', text: "Sauna and steam room were clean and well-maintained. Perfect addition to fitness center.", sentiment: 'BEST', topic: 'Amenities', rating: 5.0, date: 'Week 13' },
-        { id: 84, guestName: 'Ruth Mitchell', text: "Conference room technology was outdated. Projector quality poor. Not suitable for professional presentations.", sentiment: 'FARE', topic: 'Amenities', rating: 3.0, date: 'Week 14' },
-        { id: 85, guestName: 'Gerald Perez', text: "Bike rental program excellent. Well-maintained bikes and great trail maps provided. Explored entire city!", sentiment: 'BEST', topic: 'Amenities', rating: 5.0, date: 'Week 15' },
+        { id: 81, guestName: 'Eric Baker', text: "Rooftop terrace views are spectacular. Great place to unwind in the evening. Hidden gem!", sentiment: 'BEST', topic: 'Amenities', rating: 5.0, date: getRandomNovDate() },
+        { id: 82, guestName: 'Cynthia Nelson', text: "Hot tub was lukewarm and jets barely working. Disappointing after long day of sightseeing.", sentiment: 'FARE', topic: 'Amenities', rating: 3.0, date: getRandomNovDate() },
+        { id: 83, guestName: 'Jerry Carter', text: "Sauna and steam room were clean and well-maintained. Perfect addition to fitness center.", sentiment: 'BEST', topic: 'Amenities', rating: 5.0, date: getRandomNovDate() },
+        { id: 84, guestName: 'Ruth Mitchell', text: "Conference room technology was outdated. Projector quality poor. Not suitable for professional presentations.", sentiment: 'FARE', topic: 'Amenities', rating: 3.0, date: getRandomNovDate() },
+        { id: 85, guestName: 'Gerald Perez', text: "Bike rental program excellent. Well-maintained bikes and great trail maps provided. Explored entire city!", sentiment: 'BEST', topic: 'Amenities', rating: 5.0, date: getRandomNovDate() },
         
         // Additional ROOMS reviews
-        { id: 86, guestName: 'Pamela Roberts', text: "Blackout curtains worked perfectly. Room stayed dark and cool. Best sleep I've had in a hotel.", sentiment: 'BEST', topic: 'Rooms', rating: 5.0, date: 'Week 16' },
-        { id: 87, guestName: 'Larry Turner', text: "USB charging ports at bedside were so convenient. Modern touches appreciated. Smart room design.", sentiment: 'BEST', topic: 'Rooms', rating: 5.0, date: 'Week 17' },
-        { id: 88, guestName: 'Brenda Phillips', text: "Bathroom shower pressure was weak. Temperature fluctuated constantly. Frustrating start to each day.", sentiment: 'FARE', topic: 'Rooms', rating: 3.0, date: 'Week 18' },
-        { id: 89, guestName: 'Walter Campbell', text: "Suite upgrade was spectacular. Separate living area perfect for work. City views breathtaking!", sentiment: 'BEST', topic: 'Rooms', rating: 5.0, date: 'Week 19' },
-        { id: 90, guestName: 'Carolyn Parker', text: "Room had everything we needed. Mini-fridge, microwave, coffee maker all worked great. Very functional.", sentiment: 'BEST', topic: 'Rooms', rating: 5.0, date: 'Week 20' },
+        { id: 86, guestName: 'Pamela Roberts', text: "Blackout curtains worked perfectly. Room stayed dark and cool. Best sleep I've had in a hotel.", sentiment: 'BEST', topic: 'Rooms', rating: 5.0, date: getRandomNovDate() },
+        { id: 87, guestName: 'Larry Turner', text: "USB charging ports at bedside were so convenient. Modern touches appreciated. Smart room design.", sentiment: 'BEST', topic: 'Rooms', rating: 5.0, date: getRandomNovDate() },
+        { id: 88, guestName: 'Brenda Phillips', text: "Bathroom shower pressure was weak. Temperature fluctuated constantly. Frustrating start to each day.", sentiment: 'FARE', topic: 'Rooms', rating: 3.0, date: getRandomNovDate() },
+        { id: 89, guestName: 'Walter Campbell', text: "Suite upgrade was spectacular. Separate living area perfect for work. City views breathtaking!", sentiment: 'BEST', topic: 'Rooms', rating: 5.0, date: getRandomNovDate() },
+        { id: 90, guestName: 'Carolyn Parker', text: "Room had everything we needed. Mini-fridge, microwave, coffee maker all worked great. Very functional.", sentiment: 'BEST', topic: 'Rooms', rating: 5.0, date: getRandomNovDate() },
         
         // Additional FRONT DESK reviews
-        { id: 91, guestName: 'Albert Evans', text: "Check-out process took forever. System was down and agent had to do everything manually.", sentiment: 'FARE', topic: 'Front Desk', rating: 3.0, date: 'Week 11' },
-        { id: 92, guestName: 'Donna Edwards', text: "Front desk printed boarding passes and called cab for us. Small gestures that made travel easier.", sentiment: 'BEST', topic: 'Front Desk', rating: 5.0, date: 'Week 12' },
-        { id: 93, guestName: 'Roy Collins', text: "Night shift front desk person was unhelpful and seemed annoyed by questions. Poor customer service.", sentiment: 'BAD', topic: 'Front Desk', rating: 2.0, date: 'Week 13' },
-        { id: 94, guestName: 'Jacqueline Stewart', text: "Sarah at front desk handled our group check-in flawlessly. Organized, efficient, and friendly. A+!", sentiment: 'BEST', topic: 'Front Desk', rating: 5.0, date: 'Week 14' },
-        { id: 95, guestName: 'Harold Morris', text: "Package delivery was held safely. Front desk staff courteous when retrieving it. Secure process.", sentiment: 'BEST', topic: 'Front Desk', rating: 5.0, date: 'Week 15' },
+        { id: 91, guestName: 'Albert Evans', text: "Check-out process took forever. System was down and agent had to do everything manually.", sentiment: 'FARE', topic: 'Front Desk', rating: 3.0, date: getRandomNovDate() },
+        { id: 92, guestName: 'Donna Edwards', text: "Front desk printed boarding passes and called cab for us. Small gestures that made travel easier.", sentiment: 'BEST', topic: 'Front Desk', rating: 5.0, date: getRandomNovDate() },
+        { id: 93, guestName: 'Roy Collins', text: "Night shift front desk person was unhelpful and seemed annoyed by questions. Poor customer service.", sentiment: 'BAD', topic: 'Front Desk', rating: 2.0, date: getRandomNovDate() },
+        { id: 94, guestName: 'Jacqueline Stewart', text: "Sarah at front desk handled our group check-in flawlessly. Organized, efficient, and friendly. A+!", sentiment: 'BEST', topic: 'Front Desk', rating: 5.0, date: getRandomNovDate() },
+        { id: 95, guestName: 'Harold Morris', text: "Package delivery was held safely. Front desk staff courteous when retrieving it. Secure process.", sentiment: 'BEST', topic: 'Front Desk', rating: 5.0, date: getRandomNovDate() },
         
         // Additional OTHER reviews
-        { id: 96, guestName: 'Joyce Rogers', text: "Outdoor fire pit area was perfect for evening relaxation. S'mores kit provided was fun touch!", sentiment: 'BEST', topic: 'Other', rating: 5.0, date: 'Week 11' },
-        { id: 97, guestName: 'Carl Reed', text: "Ice machines on multiple floors broken. Had to walk to different floor every time. Basic amenity failure.", sentiment: 'FARE', topic: 'Other', rating: 3.0, date: 'Week 12' },
-        { id: 98, guestName: 'Frances Cook', text: "Artwork throughout hotel is beautiful and clearly curated with care. Adds to upscale ambiance.", sentiment: 'BEST', topic: 'Other', rating: 5.0, date: 'Week 13' },
-        { id: 99, guestName: 'Eugene Morgan', text: "Security presence made us feel safe. Staff professional and unobtrusive. Peace of mind appreciated.", sentiment: 'BEST', topic: 'Other', rating: 5.0, date: 'Week 14' },
-        { id: 100, guestName: 'Theresa Bell', text: "Overall value for money was excellent. Quality exceeded price point. Would definitely return!", sentiment: 'BEST', topic: 'Other', rating: 5.0, date: 'Week 15' },
+        { id: 96, guestName: 'Joyce Rogers', text: "Outdoor fire pit area was perfect for evening relaxation. S'mores kit provided was fun touch!", sentiment: 'BEST', topic: 'Other', rating: 5.0, date: getRandomNovDate() },
+        { id: 97, guestName: 'Carl Reed', text: "Ice machines on multiple floors broken. Had to walk to different floor every time. Basic amenity failure.", sentiment: 'FARE', topic: 'Other', rating: 3.0, date: getRandomNovDate() },
+        { id: 98, guestName: 'Frances Cook', text: "Artwork throughout hotel is beautiful and clearly curated with care. Adds to upscale ambiance.", sentiment: 'BEST', topic: 'Other', rating: 5.0, date: getRandomNovDate() },
+        { id: 99, guestName: 'Eugene Morgan', text: "Security presence made us feel safe. Staff professional and unobtrusive. Peace of mind appreciated.", sentiment: 'BEST', topic: 'Other', rating: 5.0, date: getRandomNovDate() },
+        { id: 100, guestName: 'Theresa Bell', text: "Overall value for money was excellent. Quality exceeded price point. Would definitely return!", sentiment: 'BEST', topic: 'Other', rating: 5.0, date: getRandomNovDate() },
     ];
     setReviews(mockReviews);
 
@@ -1283,6 +1289,16 @@ export function ReviewDashboard() {
       acc[topic].push(review);
       return acc;
     }, {} as Record<string, Review[]>);
+
+    // Sort reviews within each topic by date (descending - newest first)
+    Object.keys(reviewsByTopic).forEach(topic => {
+      reviewsByTopic[topic].sort((a, b) => {
+        const dateA = typeof a.date === 'string' ? new Date(a.date) : a.date;
+        const dateB = typeof b.date === 'string' ? new Date(b.date) : b.date;
+        if (!dateA || !dateB) return 0;
+        return dateB.getTime() - dateA.getTime(); // Descending order
+      });
+    });
 
     // Get all topics
     const topics = Object.keys(reviewsByTopic);
@@ -1674,7 +1690,7 @@ export function ReviewDashboard() {
                                                         <div className="flex justify-between items-start mb-2">
                                                             <div>
                                                                 <p className="font-semibold text-sm">{review.guestName || `Guest ${review.id}`}</p>
-                                                                {(review.date && (typeof review.date !== 'string')) && <p className="text-xs text-muted-foreground">{format(new Date(2025, 10, Math.floor(Math.random() * 30) + 1) as Date, 'MMM d, yyyy')}</p>}
+                                                                {review.date && <p className="text-xs text-muted-foreground">{format(typeof review.date === 'string' ? new Date(review.date) : review.date, 'MMM d, yyyy')}</p>}
                                                             </div>
                                                             <StarRating rating={review.rating} size={16} />
                                                         </div>
@@ -1738,7 +1754,7 @@ export function ReviewDashboard() {
                                                             <AccordionTrigger className="hover:no-underline py-3">
                                                                 <div className="flex items-center justify-between w-full pr-2">
                                                                     <span className="font-semibold text-green-800">{areaItem.topic}</span>
-                                                                    <Badge variant="destructive" className="ml-2">{topicReviewCount} issues</Badge>
+                                                                    <Badge variant="destructive" className="ml-2">{topicReviewCount} mentions</Badge>
                                                                 </div>
                                                             </AccordionTrigger>
                                                             <AccordionContent className="pt-2 pb-3">
@@ -1782,7 +1798,7 @@ export function ReviewDashboard() {
                                                         <div className="flex justify-between items-start mb-2">
                                                             <div>
                                                                 <p className="font-semibold text-sm">{review.guestName || `Guest ${review.id}`}</p>
-                                                                {(review.date && (typeof review.date !== 'string')) && <p className="text-xs text-muted-foreground">{format(new Date(2025, 10, Math.floor(Math.random() * 30) + 1) as Date, 'MMM d, yyyy')}</p>}
+                                                                {review.date && <p className="text-xs text-muted-foreground">{format(typeof review.date === 'string' ? new Date(review.date) : review.date, 'MMM d, yyyy')}</p>}
                                                             </div>
                                                             <StarRating rating={review.rating} size={16} />
                                                         </div>
@@ -1948,7 +1964,7 @@ export function ReviewDashboard() {
               <Button onClick={() => resetState()} variant="outline" style={{ display: "none" }}>
                   <Upload className="mr-2 h-4 w-4" /> New Analysis
               </Button>
-              <Button onClick={handleExport} style={{ display: "none" }}>
+              <Button onClick={handleExport}>
                   <Download className="mr-2 h-4 w-4" /> Export JSON Report
               </Button>
               {!isExported && (

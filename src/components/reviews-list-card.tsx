@@ -51,12 +51,21 @@ export function ReviewsListCard({ reviews }: ReviewsListCardProps) {
   const [isReplyDialogOpen, setIsReplyDialogOpen] = useState(false);
 
   const filteredReviews = useMemo(() => {
-    if (filter === 'All') return reviews;
-    if (filter === 'Critical') return reviews.filter(r => r.sentiment === 'BAD');
-    if (filter === 'High Priority') return reviews.filter(r => r.sentiment === 'FARE');
-    if (filter === 'Positive') return reviews.filter(r => r.sentiment === 'BEST' || r.sentiment === 'GOOD');
-    if (filter === 'Pending Response') return reviews.filter(r => !r.text.includes('Manager Response')); // Simple check
-    return reviews;
+    let filtered: Review[];
+    if (filter === 'All') filtered = reviews;
+    else if (filter === 'Critical') filtered = reviews.filter(r => r.sentiment === 'BAD');
+    else if (filter === 'High Priority') filtered = reviews.filter(r => r.sentiment === 'FARE');
+    else if (filter === 'Positive') filtered = reviews.filter(r => r.sentiment === 'BEST' || r.sentiment === 'GOOD');
+    else if (filter === 'Pending Response') filtered = reviews.filter(r => !r.text.includes('Manager Response')); // Simple check
+    else filtered = reviews;
+
+    // Sort by date descending (newest first)
+    return filtered.sort((a, b) => {
+      const dateA = typeof a.date === 'string' ? new Date(a.date) : a.date;
+      const dateB = typeof b.date === 'string' ? new Date(b.date) : b.date;
+      if (!dateA || !dateB) return 0;
+      return dateB.getTime() - dateA.getTime();
+    });
   }, [reviews, filter]);
 
   useEffect(() => {
@@ -151,11 +160,7 @@ export function ReviewsListCard({ reviews }: ReviewsListCardProps) {
                             <div className="flex justify-between items-start">
                                 <div>
                                     <h3 className="font-semibold text-gray-800 text-sm">{name}</h3>
-                                    {(isDateObject && (typeof review.date !== 'string')) && 
-                                    // I want to use date as random date of month November 2025
-                                    
-                                        <p className="text-xs text-gray-500"> {format(new Date(2025, 10, Math.floor(Math.random() * 30) + 1) as Date, 'MMM d, yyyy')}</p>
-                                    }
+                                    {review.date && <p className="text-xs text-gray-500">{format(typeof review.date === 'string' ? new Date(review.date) : review.date, 'MMM d, yyyy')}</p>}
                                 </div>
                                 <div className="flex items-center gap-2 flex-shrink-0">
                                     <StarRating rating={review.rating} size={20} />
